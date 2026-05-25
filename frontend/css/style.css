@@ -196,20 +196,21 @@ select.custom-input.selected { color: var(--text-main); }
 }
 
 .fate-train {
-  position: absolute; top: 45%;
-  opacity: 0;
+  position: absolute; top: 50%;
+  font-size: 48px; opacity: 0;
   transform: translateX(150%);
+  display: flex; align-items: center; gap: 4px;
+  white-space: nowrap;
 }
 .fate-train .dudu-run {
-  width: 64px; height: 64px;
+  width: 36px; height: 36px;
   object-fit: contain;
   transform: scaleX(-1);
-  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.15));
-  animation: duduBounce 0.3s ease-in-out infinite;
+  animation: duduBounce 0.25s ease-in-out infinite;
 }
 @keyframes duduBounce {
   0%, 100% { transform: scaleX(-1) translateY(0); }
-  50%      { transform: scaleX(-1) translateY(-8px); }
+  50%      { transform: scaleX(-1) translateY(-5px); }
 }
 .fate-train.animate {
   animation: fateTrainRun 2s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
