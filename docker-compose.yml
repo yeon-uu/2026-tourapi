@@ -12,6 +12,8 @@ services:
 
   app:
     build: ./backend
+    ports:
+      - "8001:8000"
     expose:
       - "8000"
     environment:
