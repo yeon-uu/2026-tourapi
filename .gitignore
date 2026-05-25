@@ -48,3 +48,9 @@ wireframe_*.html
 
 # Design mockups
 frontend/design_*.html
+
+# Root-level source images
+*.jpg
+*.png
+!frontend/**/*.jpg
+!frontend/**/*.png

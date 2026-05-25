@@ -212,6 +212,19 @@ select.custom-input.selected { color: var(--text-main); }
   0%, 100% { transform: scaleX(-1) translateY(0); }
   50%      { transform: scaleX(-1) translateY(-5px); }
 }
+.dudu-smoke {
+  position: absolute; right: -12px; top: 50%;
+  width: 10px; height: 10px;
+  background: rgba(200,200,200,0.6);
+  border-radius: 50%;
+  animation: smokeUp 0.6s ease-out infinite;
+}
+.dudu-smoke.s2 { right: -20px; animation-delay: 0.2s; width: 8px; height: 8px; }
+.dudu-smoke.s3 { right: -26px; animation-delay: 0.4s; width: 6px; height: 6px; }
+@keyframes smokeUp {
+  0%   { opacity: 0.7; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(-18px) scale(2); }
+}
 .fate-train.animate {
   animation: fateTrainRun 2s cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
 }
