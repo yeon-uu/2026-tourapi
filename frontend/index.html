@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>아이두 - 뽑기</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<div id="mobile-app">
+
+  <!-- ===== 단계 1: 뽑기 ===== -->
+  <div id="step-draw" class="screen active">
+    <nav class="top-nav">
+      <button class="nav-icon-btn" id="btn-home"><i class="fa-solid fa-house"></i> 아이두</button>
+      <button class="nav-icon-btn" id="btn-collection-1"><i class="fa-solid fa-book"></i> 컬렉션</button>
+    </nav>
+
+    <div class="draw-container">
+      <div class="card-wrapper">
+        <div class="card" id="card-inner">
+          <div class="card-face card-back">
+            <div class="card-logo">🚂</div>
+            <p>어디로 가게 될까요?</p>
+          </div>
+          <div class="card-face card-front" id="card-result">
+            <span class="rank-badge" id="res-rank"></span>
+            <h2 class="res-station" id="res-name"></h2>
+            <p class="res-line" id="res-line"></p>
+            <div class="transfer-tag" id="res-transfer" style="display:none">
+              <i class="fa-solid fa-train-subway"></i> 환승 필요
+            </div>
+          </div>
+        </div>
+      </div>
+      <canvas id="sparkle-canvas"></canvas>
+
+      <!-- 운명 연출 오버레이 -->
+      <div class="fate-overlay" id="fate-overlay">
+        <div class="fate-text" id="fate-text">운명의 역을 찾는 중...</div>
+        <div class="fate-train" id="fate-train">🚂</div>
+      </div>
+    </div>
+
+    <div class="draw-controls" id="draw-controls">
+      <button class="action-btn" id="main-draw-btn">
+        뽑기! <span id="draw-count-display"></span>
+      </button>
+    </div>
+
+    <div class="result-actions" id="result-actions" style="display:none">
+      <button class="action-btn retry-btn" id="btn-retry">다시 뽑기</button>
+      <button class="action-btn mission-btn" id="btn-mission">미션 받기 <i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+  </div>
+
+  <!-- ===== 단계 2: 미션 체크리스트 ===== -->
+  <div id="step-mission" class="screen" style="justify-content:flex-start">
+    <nav class="top-nav">
+      <button class="nav-icon-btn" id="btn-back-draw"><i class="fa-solid fa-chevron-left"></i> 뒤로</button>
+      <div class="nav-title" id="nav-station-title">체크리스트</div>
+      <div style="width:50px"></div>
+    </nav>
+
+    <div class="mission-card-mini" id="mission-mini-info"></div>
+
+    <div id="mission-loading" style="display:none; text-align:center; width:100%">
+      <div class="loading-spinner"></div>
+      <p style="font-weight:700; color:var(--accent-color)">AI가 미션을 생성하고 있어요...</p>
+    </div>
+
+    <div style="width:100%">
+      <ul class="mission-checklist" id="mission-checklist"></ul>
+    </div>
+
+    <div class="progress-bar-area">
+      <p id="progress-text">진행률: 0 / 0 완료</p>
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-fill"></div>
+      </div>
+    </div>
+
+    <button class="action-btn stamp-btn" id="stamp-btn" disabled>
+      <i class="fa-solid fa-stamp"></i> 스탬프 받기!
+    </button>
+  </div>
+
+  <!-- ===== 단계 3: 스탬프 획득 (폴라로이드) ===== -->
+  <div id="step-stamp" class="screen">
+    <canvas id="stamp-canvas"></canvas>
+    <h2 class="stamp-header">🎉 스탬프 획득!</h2>
+
+    <div class="stamp-card" id="stamp-card">
+      <!-- 사진 영역 -->
+      <div class="stamp-photo-area" id="stamp-photo-area">
+        <div class="photo-placeholder" id="photo-placeholder">
+          <i class="fa-solid fa-camera"></i>
+          <span>차창 밖 풍경 스냅샷</span>
+          <span class="photo-hint">터치하여 사진 추가</span>
+        </div>
+        <input type="file" id="stamp-photo-input" accept="image/*" capture="environment">
+      </div>
+
+      <!-- 도장 스탬프 -->
+      <div class="stamp-visual">
+        <i class="fa-solid fa-train"></i>
+      </div>
+
+      <!-- 카드 정보 -->
+      <div class="stamp-info">
+        <div class="stamp-info-header">
+          <h2 class="stamp-station" id="stamp-station-name"></h2>
+          <span class="rank-badge" id="stamp-rank"></span>
+        </div>
+        <div class="stamp-line-name" id="stamp-line"></div>
+
+        <div class="stamp-divider"></div>
+
+        <div class="stamp-missions">
+          <ul id="stamp-mission-list"></ul>
+        </div>
+
+        <div class="stamp-divider"></div>
+
+        <div class="stamp-footer">
+          <div class="stamp-date" id="stamp-date"></div>
+          <div class="stamp-author" id="stamp-author"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="result-actions" style="margin-top:25px">
+      <button class="action-btn retry-btn" id="btn-save-stamp" style="width:auto; padding:15px 30px">
+        <i class="fa-solid fa-download"></i> 저장
+      </button>
+      <button class="action-btn" id="btn-collection-2" style="width:auto; padding:15px 30px; background:var(--accent-color)">
+        <i class="fa-solid fa-book"></i> 컬렉션
+      </button>
+    </div>
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="/js/common.js"></script>
+<script src="/js/auth.js"></script>
+<script src="/js/api.js"></script>
+<script src="/js/main.js"></script>
+
+</body>
+</html>

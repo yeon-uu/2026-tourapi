@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>아이두 - 스탬프 공유</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<div id="mobile-app">
+  <div class="screen active">
+    <nav class="top-nav">
+      <button class="nav-icon-btn" onclick="window.location.href='/index.html'">
+        <i class="fa-solid fa-house"></i> 아이두
+      </button>
+      <button class="nav-icon-btn" onclick="window.location.href='/collection.html'">
+        컬렉션 <i class="fa-solid fa-book"></i>
+      </button>
+    </nav>
+
+    <h2 class="stamp-header">🎉 스탬프 획득!</h2>
+
+    <div class="stamp-card" id="stamp-card">
+      <div class="stamp-photo-area" id="stamp-photo-area">
+        <div class="photo-placeholder" id="photo-placeholder">
+          <i class="fa-solid fa-camera"></i>
+          <span>차창 밖 풍경 스냅샷</span>
+          <span class="photo-hint">터치하여 사진 추가</span>
+        </div>
+        <input type="file" id="stamp-photo-input" accept="image/*" capture="environment">
+      </div>
+
+      <!-- 도장 스탬프 -->
+      <div class="stamp-visual">
+        <i class="fa-solid fa-train"></i>
+      </div>
+
+      <div class="stamp-info">
+        <div class="stamp-info-header">
+          <h2 class="stamp-station" id="stamp-station-name"></h2>
+          <span class="rank-badge" id="stamp-rank"></span>
+        </div>
+        <div class="stamp-line-name" id="stamp-line"></div>
+
+        <div class="stamp-divider"></div>
+
+        <div class="stamp-missions">
+          <ul id="stamp-mission-list"></ul>
+        </div>
+
+        <div class="stamp-divider"></div>
+
+        <div class="stamp-footer">
+          <div class="stamp-date" id="stamp-date"></div>
+          <div class="stamp-author" id="stamp-author"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="result-actions" style="margin-top:25px">
+      <button class="action-btn retry-btn" id="btn-save" style="width:auto; padding:15px 30px">
+        <i class="fa-solid fa-download"></i> 저장
+      </button>
+      <button class="action-btn" onclick="window.location.href='/collection.html'" style="width:auto; padding:15px 30px; background:var(--accent-color)">
+        <i class="fa-solid fa-book"></i> 컬렉션
+      </button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="/js/common.js"></script>
+<script src="/js/auth.js"></script>
+<script src="/js/api.js"></script>
+<script>
+  requireAuth();
+
+  var stampData = null;
+  try {
+    stampData = JSON.parse(sessionStorage.getItem('last_stamp'));
+  } catch (e) {}
+
+  if (stampData) {
+    $('#stamp-station-name').textContent = stampData.station_name;
+    $('#stamp-rank').textContent = rarityLabel(stampData.rarity);
+    $('#stamp-rank').className = 'rank-badge ' + stampData.rarity;
+    $('#stamp-line').textContent = stampData.line_name;
+    $('#stamp-date').textContent = formatDate(stampData.acquired_at);
+    $('#stamp-author').textContent = 'by. ' + getNickname();
+
+    // 미션 목록
+    var missionList = $('#stamp-mission-list');
+    var missions = stampData.missions || [];
+    missions.forEach(function(title) {
+      var li = document.createElement('li');
+      var icon = document.createElement('i');
+      icon.className = 'fa-solid fa-check';
+      var span = document.createElement('span');
+      span.textContent = title;
+      li.appendChild(icon);
+      li.appendChild(span);
+      missionList.appendChild(li);
+    });
+  } else {
+    showError('스탬프 정보를 찾을 수 없습니다');
+  }
+
+  // 저장된 사진 불러오기
+  if (stampData && stampData.station_id) {
+    var savedPhoto = getStampPhoto(stampData.station_id);
+    if (savedPhoto) {
+      displayPhotoInArea($('#stamp-photo-area'), savedPhoto);
+    }
+  }
+
+  // 사진 업로드
+  $('#stamp-photo-area').addEventListener('click', function() {
+    $('#stamp-photo-input').click();
+  });
+
+  $('#stamp-photo-input').addEventListener('change', function(e) {
+    var file = e.target.files[0];
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function(ev) {
+      displayPhotoInArea($('#stamp-photo-area'), ev.target.result);
+      if (stampData && stampData.station_id) {
+        saveStampPhoto(stampData.station_id, ev.target.result);
+      }
+    };
+    reader.readAsDataURL(file);
+  });
+
+  $('#btn-save').addEventListener('click', function() {
+    var card = $('#stamp-card');
+    var btn = this;
+    btn.disabled = true;
+    btn.textContent = '저장 중...';
+
+    html2canvas(card, {
+      scale: 2,
+      useCORS: true,
+      backgroundColor: '#ffffff'
+    }).then(function(canvas) {
+      var link = document.createElement('a');
+      link.download = 'aido-stamp-' + ($('#stamp-station-name').textContent || 'card') + '.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fa-solid fa-download"></i> 저장';
+    }).catch(function() {
+      showError('이미지 저장에 실패했습니다');
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fa-solid fa-download"></i> 저장';
+    });
+  });
+</script>
+
+</body>
+</html>

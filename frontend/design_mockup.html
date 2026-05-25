@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>AI-DO Design Mockup — 소도시 감성</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
+<style>
+/* ===========================================
+   AI-DO Design System — 소도시 감성
+   Color Story: 오후 3시의 간이역
+   - 따뜻한 크림 배경 (필름 카메라 톤)
+   - 골든 옐로우 포인트 (햇살)
+   - 부드러운 앰버 액센트 (석양)
+   - 따뜻한 그레이 텍스트 (잉크)
+=========================================== */
+
+:root {
+  /* 베이스 — 따뜻한 크림 */
+  --bg: #FDF8F0;
+  --bg-warm: #FAF3E8;
+  --surface: rgba(255, 255, 255, 0.72);
+  --surface-solid: #FFFFFF;
+
+  /* 포인트 — 골든 옐로우 */
+  --yellow: #F2A71B;
+  --yellow-light: #FFF0C9;
+  --yellow-glow: rgba(242, 167, 27, 0.18);
+
+  /* 액센트 — 따뜻한 앰버 */
+  --amber: #E8890C;
+  --amber-deep: #D47500;
+
+  /* 서브 — 소도시 하늘 */
+  --sky: #8DBCE2;
+  --sky-light: #E8F2FA;
+
+  /* 텍스트 */
+  --ink: #2E2B26;
+  --ink-sub: #6B665D;
+  --ink-muted: #A09A8F;
+
+  /* 유틸 */
+  --border: rgba(0, 0, 0, 0.06);
+  --shadow-warm: 0 4px 20px rgba(180, 140, 60, 0.08);
+  --shadow-card: 0 8px 30px rgba(180, 140, 60, 0.10);
+  --shadow-yellow: 0 6px 24px rgba(242, 167, 27, 0.25);
+  --radius: 20px;
+  --radius-sm: 14px;
+  --radius-xs: 10px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Pretendard', -apple-system, sans-serif;
+  background: #E8E2D8;
+  color: var(--ink);
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  padding: 40px 20px;
+  flex-wrap: wrap;
+  min-height: 100vh;
+}
+
+/* --- 목업 프레임 --- */
+.phone-frame {
+  width: 375px;
+  min-height: 760px;
+  background: var(--bg);
+  border-radius: 36px;
+  box-shadow:
+    0 0 0 8px #1a1a1a,
+    0 0 0 10px #333,
+    0 20px 60px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.phone-label {
+  text-align: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink-muted);
+  margin-top: 16px;
+  letter-spacing: 0.5px;
+}
+
+/* --- 상단 상태바 (장식) --- */
+.status-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 28px 0;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink);
+}
+.status-bar-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+}
+
+/* --- 공통 화면 래퍼 --- */
+.screen-content {
+  padding: 0 24px 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ===========================================
+   1. 로그인 화면
+=========================================== */
+.login-hero {
+  width: calc(100% + 48px);
+  margin: 0 -24px;
+  height: 280px;
+  background:
+    linear-gradient(180deg, transparent 50%, var(--bg) 100%),
+    linear-gradient(145deg, #87CEEB 0%, #5BA3D9 40%, #F2A71B 120%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.login-hero::before {
+  content: '';
+  position: absolute;
+  bottom: 40px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: repeating-linear-gradient(90deg, var(--ink-muted) 0, var(--ink-muted) 20px, transparent 20px, transparent 30px);
+  opacity: 0.15;
+}
+
+.hero-emoji {
+  font-size: 64px;
+  margin-bottom: 8px;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+}
+
+.hero-title {
+  font-size: 38px;
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: -2px;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+}
+
+.hero-subtitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.85);
+  margin-top: 4px;
+  letter-spacing: 2px;
+}
+
+.login-form {
+  width: 100%;
+  margin-top: -8px;
+}
+
+.input-field {
+  width: 100%;
+  padding: 16px 20px;
+  background: var(--surface-solid);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 15px;
+  font-weight: 600;
+  font-family: 'Pretendard', sans-serif;
+  color: var(--ink);
+  outline: none;
+  margin-bottom: 12px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.input-field::placeholder { color: var(--ink-muted); font-weight: 500; }
+.input-field:focus {
+  border-color: var(--yellow);
+  box-shadow: 0 0 0 3px var(--yellow-glow);
+}
+
+.select-field {
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23A09A8F' stroke-width='2' stroke-linecap='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  background-size: 18px;
+  color: var(--ink-muted);
+}
+.select-field.has-value { color: var(--ink); }
+
+.btn-primary {
+  width: 100%;
+  padding: 17px;
+  background: var(--yellow);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 16px;
+  font-weight: 800;
+  font-family: 'Pretendard', sans-serif;
+  cursor: pointer;
+  box-shadow: var(--shadow-yellow);
+  margin-top: 8px;
+  letter-spacing: -0.3px;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.btn-primary:active { transform: scale(0.98); }
+
+/* ===========================================
+   2. 뽑기 (가챠) 화면
+=========================================== */
+.draw-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 16px 0 8px;
+}
+.nav-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: var(--surface-solid);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xs);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink-sub);
+  cursor: pointer;
+}
+.nav-chip i { color: var(--yellow); font-size: 14px; }
+
+.gacha-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 0;
+}
+
+/* 카드 뒷면 */
+.gacha-card-back {
+  width: 240px;
+  height: 340px;
+  border-radius: var(--radius);
+  background: linear-gradient(155deg, var(--yellow) 0%, var(--amber) 70%, var(--amber-deep) 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  position: relative;
+  box-shadow:
+    0 12px 40px rgba(242, 167, 27, 0.25),
+    0 2px 8px rgba(0,0,0,0.05);
+}
+.gacha-card-back::after {
+  content: '';
+  position: absolute;
+  inset: 10px;
+  border: 2px dashed rgba(255,255,255,0.25);
+  border-radius: calc(var(--radius) - 6px);
+}
+.gacha-card-back .card-emoji {
+  font-size: 72px;
+  margin-bottom: 12px;
+}
+.gacha-card-back p {
+  font-size: 15px;
+  font-weight: 700;
+  opacity: 0.9;
+}
+
+/* 카드 앞면 (결과) */
+.gacha-card-front {
+  width: 240px;
+  height: 340px;
+  border-radius: var(--radius);
+  background: var(--surface-solid);
+  border: 2px solid var(--yellow-light);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 30px;
+  box-shadow: var(--shadow-card);
+  text-align: center;
+}
+.gacha-card-front.ssr {
+  border-color: var(--yellow);
+  box-shadow: 0 0 0 1px var(--yellow), var(--shadow-card);
+}
+
+.badge {
+  display: inline-block;
+  padding: 4px 14px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  color: white;
+}
+.badge-normal { background: var(--ink-muted); }
+.badge-rare { background: linear-gradient(135deg, #a78bfa, #7c3aed); }
+.badge-ssr { background: linear-gradient(135deg, #F2A71B, #E8890C); }
+
+.station-name {
+  font-size: 32px;
+  font-weight: 900;
+  margin: 14px 0 6px;
+  color: var(--ink);
+  letter-spacing: -1.5px;
+}
+.line-name {
+  font-size: 14px;
+  color: var(--ink-muted);
+  font-weight: 600;
+}
+.transfer-chip {
+  margin-top: 24px;
+  padding: 8px 14px;
+  background: var(--yellow-light);
+  border-radius: var(--radius-xs);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--amber);
+}
+
+.draw-btn-area { width: 100%; padding: 0 24px 32px; }
+.btn-draw {
+  width: 100%;
+  padding: 17px;
+  background: var(--yellow);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 17px;
+  font-weight: 800;
+  font-family: 'Pretendard', sans-serif;
+  box-shadow: var(--shadow-yellow);
+  cursor: pointer;
+}
+.draw-count {
+  text-align: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink-muted);
+  margin-top: 10px;
+}
+
+.btn-row {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  padding: 0 24px 32px;
+}
+.btn-secondary {
+  flex: 1;
+  padding: 15px;
+  background: var(--surface-solid);
+  color: var(--ink-sub);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 15px;
+  font-weight: 700;
+  font-family: 'Pretendard', sans-serif;
+  cursor: pointer;
+}
+.btn-accent {
+  flex: 1;
+  padding: 15px;
+  background: var(--amber);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 15px;
+  font-weight: 700;
+  font-family: 'Pretendard', sans-serif;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(232, 137, 12, 0.3);
+}
+
+/* ===========================================
+   3. 미션 체크리스트 화면
+=========================================== */
+.mission-header {
+  width: 100%;
+  padding: 16px 0 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.back-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: var(--surface-solid);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink-sub);
+  font-size: 14px;
+  cursor: pointer;
+}
+.mission-title {
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--ink);
+  letter-spacing: -0.3px;
+}
+
+.mission-info-card {
+  width: 100%;
+  background: var(--surface-solid);
+  border: 1.5px solid var(--yellow-light);
+  border-radius: var(--radius);
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+.info-station {
+  font-size: 22px;
+  font-weight: 900;
+  color: var(--ink);
+  letter-spacing: -0.5px;
+}
+.info-line {
+  font-size: 13px;
+  color: var(--ink-muted);
+  font-weight: 600;
+  margin-top: 2px;
+}
+.info-badge { margin-left: auto; }
+
+.mission-list { width: 100%; list-style: none; }
+.mission-item {
+  display: flex;
+  align-items: center;
+  padding: 16px 18px;
+  background: var(--surface-solid);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  margin-bottom: 10px;
+  transition: all 0.25s;
+}
+.mission-item.done {
+  background: #FEFDF5;
+  border-color: var(--yellow-light);
+}
+.check-circle {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid #D0CCC4;
+  margin-right: 14px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: transparent;
+  transition: all 0.2s;
+}
+.mission-item.done .check-circle {
+  background: var(--yellow);
+  border-color: var(--yellow);
+  color: #fff;
+}
+.mission-text {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1.5;
+}
+.mission-item.done .mission-text {
+  text-decoration: line-through;
+  color: var(--ink-muted);
+}
+
+.progress-area {
+  width: 100%;
+  margin: 16px 0;
+}
+.progress-label {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--amber);
+  margin-bottom: 8px;
+}
+.progress-track {
+  width: 100%;
+  height: 8px;
+  background: var(--yellow-light);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  width: 60%;
+  background: linear-gradient(90deg, var(--yellow), var(--amber));
+  border-radius: 8px;
+  transition: width 0.4s;
+}
+
+.btn-stamp {
+  width: 100%;
+  padding: 17px;
+  background: var(--yellow);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 16px;
+  font-weight: 800;
+  font-family: 'Pretendard', sans-serif;
+  box-shadow: var(--shadow-yellow);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+.btn-stamp.disabled {
+  background: #D0CCC4;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+/* ===========================================
+   4. 스탬프 획득 화면
+=========================================== */
+.stamp-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 700px;
+  padding: 40px 24px;
+  background: linear-gradient(180deg, var(--bg) 0%, var(--yellow-light) 100%);
+}
+
+.stamp-congrats {
+  font-size: 26px;
+  font-weight: 900;
+  color: var(--amber);
+  margin-bottom: 24px;
+  letter-spacing: -0.5px;
+}
+
+.stamp-card {
+  width: 100%;
+  background: var(--surface-solid);
+  border: 2px dashed var(--yellow);
+  border-radius: var(--radius);
+  padding: 40px 24px 28px;
+  text-align: center;
+  position: relative;
+  box-shadow: var(--shadow-card);
+}
+
+.stamp-seal {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 4px solid #D94F4F;
+  color: #D94F4F;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: -36px;
+  right: 20px;
+  transform: rotate(12deg);
+  background: #fff;
+  box-shadow: 0 4px 16px rgba(217, 79, 79, 0.15);
+}
+.stamp-seal i { font-size: 28px; }
+.stamp-seal-text {
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  margin-top: 3px;
+}
+
+.stamp-station-name {
+  font-size: 30px;
+  font-weight: 900;
+  color: var(--ink);
+  letter-spacing: -1.5px;
+  margin-bottom: 8px;
+}
+.stamp-meta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.stamp-line-text {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink-muted);
+}
+
+.stamp-divider {
+  width: 100%;
+  height: 1px;
+  background: repeating-linear-gradient(90deg, var(--ink-muted) 0, var(--ink-muted) 4px, transparent 4px, transparent 8px);
+  opacity: 0.2;
+  margin: 16px 0;
+}
+
+.stamp-date {
+  font-size: 20px;
+  font-weight: 900;
+  color: var(--ink);
+  letter-spacing: 3px;
+  font-variant-numeric: tabular-nums;
+}
+
+.stamp-missions-done {
+  text-align: left;
+  margin-top: 16px;
+}
+.stamp-missions-done h4 {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--ink);
+  margin-bottom: 10px;
+}
+.stamp-missions-done li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--ink-sub);
+  margin-bottom: 6px;
+  line-height: 1.5;
+}
+.stamp-missions-done li i {
+  color: var(--yellow);
+  margin-top: 3px;
+  font-size: 12px;
+}
+.stamp-missions-done ul { list-style: none; }
+
+.stamp-author {
+  text-align: right;
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--amber);
+  margin-top: 12px;
+}
+
+/* ===========================================
+   5. 컬렉션 화면
+=========================================== */
+.collection-screen {
+  padding: 0 24px 40px;
+}
+
+.collection-top {
+  width: 100%;
+  background: var(--surface-solid);
+  border: 1.5px solid var(--yellow-light);
+  border-radius: var(--radius);
+  padding: 24px;
+  text-align: center;
+  margin-bottom: 28px;
+  box-shadow: var(--shadow-warm);
+}
+.collection-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink-muted);
+  margin-bottom: 4px;
+}
+.collection-rate {
+  font-size: 28px;
+  font-weight: 900;
+  color: var(--amber);
+  letter-spacing: -0.5px;
+}
+.collection-bar {
+  margin-top: 16px;
+}
+
+.rail-group { margin-bottom: 32px; width: 100%; }
+.rail-label {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.rail-label::before,
+.rail-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.track-row {
+  display: flex;
+  justify-content: space-around;
+  position: relative;
+  padding: 0 8px;
+}
+.track-row::before {
+  content: '';
+  position: absolute;
+  top: 18px;
+  left: 15%;
+  right: 15%;
+  height: 3px;
+  background: repeating-linear-gradient(90deg, #DDD 0, #DDD 8px, transparent 8px, transparent 14px);
+  z-index: 0;
+}
+
+.station-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 1;
+  width: 56px;
+}
+.node-dot {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 2.5px solid #D0CCC4;
+  background: var(--bg-warm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+  font-size: 13px;
+  color: #C0BAB0;
+  transition: all 0.3s;
+}
+.station-node.active .node-dot {
+  background: var(--yellow);
+  border-color: var(--amber);
+  color: white;
+  box-shadow: 0 4px 14px rgba(242, 167, 27, 0.3);
+  transform: scale(1.1);
+}
+.station-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ink-muted);
+  text-align: center;
+  word-break: keep-all;
+  line-height: 1.3;
+}
+.station-node.active .station-label {
+  color: var(--ink);
+  font-weight: 800;
+}
+</style>
+</head>
+<body>
+
+<!-- ============================================
+     SCREEN 1: 로그인
+============================================ -->
+<div>
+<div class="phone-frame">
+  <div class="status-bar">
+    <span>3:24</span>
+    <span class="status-bar-right">
+      <i class="fa-solid fa-signal" style="font-size:11px"></i>
+      <i class="fa-solid fa-wifi" style="font-size:11px"></i>
+      <i class="fa-solid fa-battery-full" style="font-size:13px"></i>
+    </span>
+  </div>
+
+  <div class="login-hero">
+    <div class="hero-emoji">🚂</div>
+    <div class="hero-title">아이두</div>
+    <div class="hero-subtitle">A CLEAR DAY TRIP</div>
+  </div>
+
+  <div class="screen-content">
+    <p style="font-size:20px; font-weight:800; margin-bottom:28px; color:var(--ink); letter-spacing:-0.5px">
+      어디로 떠나볼까?
+    </p>
+
+    <div class="login-form">
+      <input type="text" class="input-field" placeholder="닉네임 입력" maxlength="10">
+      <select class="input-field select-field">
+        <option disabled selected>출발역 선택</option>
+        <option>서울 (경부선)</option>
+        <option>부산 (경부선)</option>
+        <option>강릉 (경강선)</option>
+      </select>
+      <button class="btn-primary">시작하기</button>
+    </div>
+  </div>
+</div>
+<p class="phone-label">1. 로그인</p>
+</div>
+
+
+<!-- ============================================
+     SCREEN 2-a: 뽑기 (뒤집기 전)
+============================================ -->
+<div>
+<div class="phone-frame">
+  <div class="status-bar">
+    <span>3:24</span>
+    <span class="status-bar-right">
+      <i class="fa-solid fa-signal" style="font-size:11px"></i>
+      <i class="fa-solid fa-wifi" style="font-size:11px"></i>
+      <i class="fa-solid fa-battery-full" style="font-size:13px"></i>
+    </span>
+  </div>
+
+  <div class="screen-content" style="padding-top:0">
+    <div class="draw-nav">
+      <div class="nav-chip"><i class="fa-solid fa-house"></i> 아이두</div>
+      <div class="nav-chip"><i class="fa-solid fa-book"></i> 컬렉션</div>
+    </div>
+
+    <div class="gacha-area">
+      <div class="gacha-card-back">
+        <div class="card-emoji">🚂</div>
+        <p>어디로 가게 될까요?</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="draw-btn-area">
+    <button class="btn-draw">뽑기!</button>
+    <p class="draw-count">오늘 남은 횟수: 5 / 5</p>
+  </div>
+</div>
+<p class="phone-label">2-a. 뽑기 (대기)</p>
+</div>
+
+
+<!-- ============================================
+     SCREEN 2-b: 뽑기 (결과)
+============================================ -->
+<div>
+<div class="phone-frame">
+  <div class="status-bar">
+    <span>3:24</span>
+    <span class="status-bar-right">
+      <i class="fa-solid fa-signal" style="font-size:11px"></i>
+      <i class="fa-solid fa-wifi" style="font-size:11px"></i>
+      <i class="fa-solid fa-battery-full" style="font-size:13px"></i>
+    </span>
+  </div>
+
+  <div class="screen-content" style="padding-top:0">
+    <div class="draw-nav">
+      <div class="nav-chip"><i class="fa-solid fa-house"></i> 아이두</div>
+      <div class="nav-chip"><i class="fa-solid fa-book"></i> 컬렉션</div>
+    </div>
+
+    <div class="gacha-area">
+      <div class="gacha-card-front ssr">
+        <span class="badge badge-ssr">SSR</span>
+        <div class="station-name">정동진</div>
+        <div class="line-name">동해산타열차</div>
+        <div class="transfer-chip">
+          <i class="fa-solid fa-train-subway"></i> 환승 필요
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn-secondary">다시 뽑기</button>
+    <button class="btn-accent">미션 받기 <i class="fa-solid fa-arrow-right"></i></button>
+  </div>
+</div>
+<p class="phone-label">2-b. 뽑기 (결과 — SSR)</p>
+</div>
+
+
+<!-- ============================================
+     SCREEN 3: 미션 체크리스트
+============================================ -->
+<div>
+<div class="phone-frame">
+  <div class="status-bar">
+    <span>3:25</span>
+    <span class="status-bar-right">
+      <i class="fa-solid fa-signal" style="font-size:11px"></i>
+      <i class="fa-solid fa-wifi" style="font-size:11px"></i>
+      <i class="fa-solid fa-battery-full" style="font-size:13px"></i>
+    </span>
+  </div>
+
+  <div class="screen-content" style="padding-top:0">
+    <div class="mission-header">
+      <button class="back-btn"><i class="fa-solid fa-chevron-left"></i></button>
+      <div class="mission-title">정동진 체크리스트</div>
+    </div>
+
+    <div class="mission-info-card">
+      <div>
+        <div class="info-station">정동진</div>
+        <div class="info-line">동해산타열차</div>
+      </div>
+      <div class="info-badge"><span class="badge badge-ssr">SSR</span></div>
+    </div>
+
+    <ul class="mission-list">
+      <li class="mission-item done">
+        <div class="check-circle"><i class="fa-solid fa-check"></i></div>
+        <span class="mission-text">정동진 해돋이 공원에서 일출 사진 찍기</span>
+      </li>
+      <li class="mission-item done">
+        <div class="check-circle"><i class="fa-solid fa-check"></i></div>
+        <span class="mission-text">모래시계 공원의 세계 최대 모래시계 앞에서 인증샷</span>
+      </li>
+      <li class="mission-item done">
+        <div class="check-circle"><i class="fa-solid fa-check"></i></div>
+        <span class="mission-text">정동진역 바다가 보이는 벤치에서 커피 한 잔</span>
+      </li>
+      <li class="mission-item">
+        <div class="check-circle"><i class="fa-solid fa-check"></i></div>
+        <span class="mission-text">정동진 레일바이크 타고 해안 풍경 감상하기</span>
+      </li>
+      <li class="mission-item">
+        <div class="check-circle"><i class="fa-solid fa-check"></i></div>
+        <span class="mission-text">현지 횟집에서 싱싱한 회 한 접시 먹기</span>
+      </li>
+    </ul>
+
+    <div class="progress-area">
+      <div class="progress-label">진행률: 3 / 5 완료</div>
+      <div class="progress-track">
+        <div class="progress-fill" style="width:60%"></div>
+      </div>
+    </div>
+
+    <button class="btn-stamp disabled">
+      <i class="fa-solid fa-stamp"></i> 스탬프 받기
+    </button>
+  </div>
+</div>
+<p class="phone-label">3. 미션 체크리스트</p>
+</div>
+
+
+<!-- ============================================
+     SCREEN 4: 스탬프 획득
+============================================ -->
+<div>
+<div class="phone-frame">
+  <div class="status-bar">
+    <span>3:30</span>
+    <span class="status-bar-right">
+      <i class="fa-solid fa-signal" style="font-size:11px"></i>
+      <i class="fa-solid fa-wifi" style="font-size:11px"></i>
+      <i class="fa-solid fa-battery-full" style="font-size:13px"></i>
+    </span>
+  </div>
+
+  <div class="stamp-screen">
+    <div class="stamp-congrats">스탬프 획득!</div>
+
+    <div class="stamp-card">
+      <div class="stamp-seal">
+        <i class="fa-solid fa-train"></i>
+        <div class="stamp-seal-text">CLEARED</div>
+      </div>
+
+      <div class="stamp-station-name">정동진</div>
+      <div class="stamp-meta">
+        <span class="badge badge-ssr">SSR</span>
+        <span class="stamp-line-text">동해산타열차</span>
+      </div>
+
+      <div class="stamp-divider"></div>
+      <div class="stamp-date">2026.05.25</div>
+
+      <div class="stamp-missions-done">
+        <h4>완료 미션</h4>
+        <ul>
+          <li><i class="fa-solid fa-check"></i> 정동진 해돋이 공원에서 일출 사진 찍기</li>
+          <li><i class="fa-solid fa-check"></i> 모래시계 공원의 세계 최대 모래시계 앞에서 인증샷</li>
+          <li><i class="fa-solid fa-check"></i> 정동진역 바다가 보이는 벤치에서 커피 한 잔</li>
+          <li><i class="fa-solid fa-check"></i> 정동진 레일바이크 타고 해안 풍경 감상하기</li>
+          <li><i class="fa-solid fa-check"></i> 현지 횟집에서 싱싱한 회 한 접시 먹기</li>
+        </ul>
+      </div>
+
+      <div class="stamp-divider"></div>
+      <div class="stamp-author">by. 여행자</div>
+    </div>
+
+    <div class="btn-row" style="padding:0; margin-top:20px">
+      <button class="btn-secondary"><i class="fa-solid fa-camera"></i> 저장</button>
+      <button class="btn-accent"><i class="fa-solid fa-book"></i> 컬렉션</button>
+    </div>
+  </div>
+</div>
+<p class="phone-label">4. 스탬프 획득</p>
+</div>
+
+
+<!-- ============================================
+     SCREEN 5: 컬렉션
+============================================ -->
+<div>
+<div class="phone-frame">
+  <div class="status-bar">
+    <span>3:32</span>
+    <span class="status-bar-right">
+      <i class="fa-solid fa-signal" style="font-size:11px"></i>
+      <i class="fa-solid fa-wifi" style="font-size:11px"></i>
+      <i class="fa-solid fa-battery-full" style="font-size:13px"></i>
+    </span>
+  </div>
+
+  <div class="collection-screen">
+    <div class="draw-nav" style="margin-bottom:12px">
+      <div class="nav-chip"><i class="fa-solid fa-house"></i> 아이두 홈</div>
+      <div style="font-size:16px; font-weight:800">내 여행 기록</div>
+      <div style="width:40px"></div>
+    </div>
+
+    <div class="collection-top">
+      <div class="collection-label">달성률</div>
+      <div class="collection-rate">3 / 7 역</div>
+      <div class="collection-bar">
+        <div class="progress-track">
+          <div class="progress-fill" style="width:43%"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 노선 1 -->
+    <div class="rail-group">
+      <div class="rail-label">경부선</div>
+      <div class="track-row">
+        <div class="station-node active">
+          <div class="node-dot"><i class="fa-solid fa-train"></i></div>
+          <span class="station-label">서울</span>
+        </div>
+        <div class="station-node active">
+          <div class="node-dot"><i class="fa-solid fa-train"></i></div>
+          <span class="station-label">대전</span>
+        </div>
+        <div class="station-node">
+          <div class="node-dot"><i class="fa-solid fa-lock" style="font-size:11px"></i></div>
+          <span class="station-label">동대구</span>
+        </div>
+        <div class="station-node">
+          <div class="node-dot"><i class="fa-solid fa-lock" style="font-size:11px"></i></div>
+          <span class="station-label">부산</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 노선 2 -->
+    <div class="rail-group">
+      <div class="rail-label">동해산타열차</div>
+      <div class="track-row">
+        <div class="station-node active">
+          <div class="node-dot"><i class="fa-solid fa-train"></i></div>
+          <span class="station-label">정동진</span>
+        </div>
+        <div class="station-node">
+          <div class="node-dot"><i class="fa-solid fa-lock" style="font-size:11px"></i></div>
+          <span class="station-label">삼척</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 노선 3 -->
+    <div class="rail-group">
+      <div class="rail-label">경강선</div>
+      <div class="track-row">
+        <div class="station-node">
+          <div class="node-dot"><i class="fa-solid fa-lock" style="font-size:11px"></i></div>
+          <span class="station-label">강릉</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<p class="phone-label">5. 컬렉션</p>
+</div>
+
+</body>
+</html>

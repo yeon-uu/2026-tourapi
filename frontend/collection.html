@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>아이두 - 컬렉션</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<div id="mobile-app">
+  <div class="screen active" style="justify-content:flex-start; padding-top:20px">
+    <nav class="top-nav" style="margin-bottom:10px">
+      <button class="nav-icon-btn" onclick="window.location.href='/index.html'">
+        <i class="fa-solid fa-house"></i> 아이두 홈
+      </button>
+      <div class="nav-title">내 여행 기록</div>
+      <div style="width:75px"></div>
+    </nav>
+
+    <div class="collection-summary">
+      <div style="font-size:14px; color:var(--text-muted); font-weight:700; margin-bottom:5px">달성률</div>
+      <div style="font-size:28px; font-weight:900; color:var(--accent-color)" id="total-rate">- / - 역</div>
+      <div class="progress-track" style="height:8px; margin:15px 0 5px 0">
+        <div class="progress-fill" id="total-progress" style="width:0%"></div>
+      </div>
+    </div>
+
+    <div id="loading" style="text-align:center; width:100%">
+      <div class="loading-spinner"></div>
+    </div>
+
+    <div id="railway-container" style="width:100%; padding-bottom:40px"></div>
+  </div>
+</div>
+
+<!-- 스탬프 카드 모달 -->
+<div class="stamp-modal-overlay" id="stamp-modal">
+  <button class="stamp-modal-close" id="modal-close"><i class="fa-solid fa-xmark"></i></button>
+  <div class="stamp-card" id="modal-stamp-card">
+    <div class="stamp-photo-area">
+      <div class="photo-placeholder">
+        <i class="fa-solid fa-camera"></i>
+        <span>차창 밖 풍경 스냅샷</span>
+      </div>
+    </div>
+    <div class="stamp-visual">
+      <i class="fa-solid fa-train"></i>
+    </div>
+    <div class="stamp-info">
+      <div class="stamp-info-header">
+        <h2 class="stamp-station" id="modal-station-name"></h2>
+        <span class="rank-badge" id="modal-rank"></span>
+      </div>
+      <div class="stamp-line-name" id="modal-line"></div>
+      <div class="stamp-divider"></div>
+      <div class="stamp-footer">
+        <div class="stamp-date" id="modal-date"></div>
+        <div class="stamp-author" id="modal-author"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="/js/common.js"></script>
+<script src="/js/auth.js"></script>
+<script src="/js/api.js"></script>
+<script src="/js/collection.js"></script>
+
+</body>
+</html>

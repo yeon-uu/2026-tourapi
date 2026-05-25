@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>아이두 - 여행의 시작</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<div id="mobile-app">
+  <div class="screen active">
+    <div class="logo-wrapper">
+      <span class="logo-icon">🚂</span>
+      <h1 class="logo-text">아이두</h1>
+    </div>
+    <h2 class="main-title">"어디로 떠나볼까?"</h2>
+
+    <div class="input-group">
+      <input type="text" id="user-nickname" class="custom-input" placeholder="닉네임 입력" maxlength="10">
+    </div>
+    <div class="input-group">
+      <select id="start-station" class="custom-input">
+        <option value="" disabled selected>출발역 선택</option>
+      </select>
+    </div>
+
+    <button class="action-btn" id="start-btn">시작하기</button>
+
+    <p id="login-error" style="color:#E63946; font-weight:700; font-size:14px; margin-top:15px; display:none;"></p>
+  </div>
+</div>
+
+<script src="/js/common.js"></script>
+<script src="/js/auth.js"></script>
+<script src="/js/api.js"></script>
+<script>
+  // 이미 로그인 상태면 메인으로 이동
+  redirectIfLoggedIn();
+
+  // 역 목록 로드
+  async function loadStations() {
+    try {
+      const stations = await getStations();
+      const select = $('#start-station');
+      stations.forEach(function(s) {
+        const opt = document.createElement('option');
+        opt.value = s.id;
+        opt.textContent = s.name + ' (' + s.line_name + ')';
+        select.appendChild(opt);
+      });
+    } catch (e) {
+      showError('역 목록을 불러올 수 없습니다');
+    }
+  }
+
+  loadStations();
+
+  // 출발역 선택 시 색상 변경
+  $('#start-station').addEventListener('change', function() {
+    this.classList.add('selected');
+  });
+
+  // 시작하기 버튼
+  $('#start-btn').addEventListener('click', async function() {
+    const nickname = $('#user-nickname').value.trim();
+    const stationId = $('#start-station').value;
+    const errorEl = $('#login-error');
+
+    if (!nickname || nickname.length < 2) {
+      errorEl.textContent = '닉네임을 2자 이상 입력해주세요';
+      show(errorEl);
+      return;
+    }
+    if (!stationId) {
+      errorEl.textContent = '출발역을 선택해주세요';
+      show(errorEl);
+      return;
+    }
+
+    hide(errorEl);
+    this.disabled = true;
+    this.textContent = '접속 중...';
+
+    try {
+      const data = await guestLogin(nickname, parseInt(stationId));
+      saveAuth(data);
+      window.location.href = '/index.html';
+    } catch (e) {
+      errorEl.textContent = e.message || '로그인에 실패했습니다';
+      show(errorEl);
+      this.disabled = false;
+      this.textContent = '시작하기';
+    }
+  });
+
+  // Enter 키로 로그인
+  $('#user-nickname').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') $('#start-btn').click();
+  });
+</script>
+
+</body>
+</html>
