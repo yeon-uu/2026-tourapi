@@ -1,8 +1,19 @@
 services:
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./frontend:/usr/share/nginx/html:ro
+    depends_on:
+      - app
+    restart: unless-stopped
+
   app:
     build: ./backend
-    ports:
-      - "8001:8000"
+    expose:
+      - "8000"
     environment:
       - DATABASE_URL=postgresql+asyncpg://ai_do:${DB_PASSWORD}@db:5432/ai_do
       - JWT_SECRET_KEY=${JWT_SECRET_KEY}
