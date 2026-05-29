@@ -35,10 +35,19 @@ $('#btn-back-draw').addEventListener('click', function() {
   showStep('step-draw');
 });
 
+$('#btn-back-chat').addEventListener('click', function() {
+  showStep('step-draw');
+});
+
+// 채팅 완료 버튼 (chat.js에서도 사용)
+$('#chat-finish-btn').addEventListener('click', function() {
+  completeChatSelection();
+});
+
 // ===== 1. 뽑기 =====
 $('#main-draw-btn').addEventListener('click', drawCard);
 $('#btn-retry').addEventListener('click', resetCard);
-$('#btn-mission').addEventListener('click', receiveMission);
+$('#btn-mission').addEventListener('click', startChat);  // 채팅 UI로 이동
 
 async function drawCard() {
   var btn = $('#main-draw-btn');
@@ -135,7 +144,8 @@ function updateDrawButton() {
 }
 
 // ===== 2. 미션 =====
-async function receiveMission() {
+// receiveMissionWithThemes: chat.js에서 테마 선택 후 호출됨
+async function receiveMissionWithThemes(themes) {
   if (!currentDraw) return;
 
   showStep('step-mission');
@@ -154,6 +164,18 @@ async function receiveMission() {
   miniInfo.appendChild(nameEl);
   miniInfo.appendChild(lineEl);
 
+  // 선택한 테마 태그 표시
+  if (themes && themes.length > 0) {
+    var themeWrap = document.createElement('div');
+    themeWrap.style.cssText = 'display:flex; gap:6px; flex-wrap:wrap; margin-top:8px; justify-content:center';
+    themes.forEach(function(t) {
+      var tag = createTextEl('span', themeLabel(t), 'card-info-tag');
+      tag.style.cssText = 'background:var(--primary-light); color:var(--accent-color); padding:4px 10px; border-radius:10px; font-size:12px; font-weight:700';
+      themeWrap.appendChild(tag);
+    });
+    miniInfo.appendChild(themeWrap);
+  }
+
   // 미션 목록 초기화
   var listEl = $('#mission-checklist');
   listEl.textContent = '';
@@ -167,8 +189,8 @@ async function receiveMission() {
       currentChecklist = await getChecklist(currentDraw.draw_id);
     } catch (e) {
       if (e.status === 404) {
-        // 없으면 생성
-        currentChecklist = await generateChecklist(currentDraw.draw_id);
+        // 없으면 생성 (테마 전달)
+        currentChecklist = await generateChecklist(currentDraw.draw_id, themes);
       } else {
         throw e;
       }
@@ -181,6 +203,17 @@ async function receiveMission() {
     hide('#mission-loading');
     showError('미션 생성에 실패했습니다: ' + e.message);
   }
+}
+
+// 테마 한글 라벨
+function themeLabel(theme) {
+  var map = {
+    food: '🍔 맛집',
+    nature: '🌲 자연',
+    culture: '🏛️ 역사',
+    random: '🎲 랜덤'
+  };
+  return map[theme] || theme;
 }
 
 function renderMissions() {
@@ -381,28 +414,20 @@ $('#stamp-photo-input').addEventListener('change', function(e) {
   reader.readAsDataURL(file);
 });
 
-// ===== 카드 이미지 저장 (html2canvas) =====
+// ===== 카드 이미지 저장 (Safari 호환) =====
 $('#btn-save-stamp').addEventListener('click', function() {
-  var card = $('#stamp-card');
   var btn = this;
   btn.disabled = true;
   btn.textContent = '저장 중...';
 
-  html2canvas(card, {
-    scale: 2,
-    useCORS: true,
-    backgroundColor: '#ffffff'
-  }).then(function(canvas) {
-    var link = document.createElement('a');
-    link.download = 'aido-stamp-' + ($('#stamp-station-name').textContent || 'card') + '.png';
-    link.href = canvas.toDataURL('image/png');
-    link.click();
+  var stationName = $('#stamp-station-name').textContent || 'card';
+  saveCardAsImage($('#stamp-card'), stationName, function() {
     btn.disabled = false;
-    btn.innerHTML = '<i class="fa-solid fa-download"></i> 저장';
-  }).catch(function() {
-    showError('이미지 저장에 실패했습니다');
-    btn.disabled = false;
-    btn.innerHTML = '<i class="fa-solid fa-download"></i> 저장';
+    btn.textContent = '';
+    var icon = document.createElement('i');
+    icon.className = 'fa-solid fa-download';
+    btn.appendChild(icon);
+    btn.appendChild(document.createTextNode(' 저장'));
   });
 });
 

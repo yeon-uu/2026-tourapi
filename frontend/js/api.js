@@ -72,8 +72,12 @@ function getChecklist(drawId) {
   return request('GET', `/checklists/${drawId}`);
 }
 
-function generateChecklist(drawId) {
-  return request('POST', `/checklists/${drawId}/generate`);
+function generateChecklist(drawId, themes) {
+  var body = undefined;
+  if (themes && themes.length > 0) {
+    body = { themes: themes };
+  }
+  return request('POST', `/checklists/${drawId}/generate`, { body: body });
 }
 
 function toggleMission(checklistId, seq) {

@@ -134,26 +134,18 @@
   });
 
   $('#btn-save').addEventListener('click', function() {
-    var card = $('#stamp-card');
     var btn = this;
     btn.disabled = true;
     btn.textContent = '저장 중...';
 
-    html2canvas(card, {
-      scale: 2,
-      useCORS: true,
-      backgroundColor: '#ffffff'
-    }).then(function(canvas) {
-      var link = document.createElement('a');
-      link.download = 'aido-stamp-' + ($('#stamp-station-name').textContent || 'card') + '.png';
-      link.href = canvas.toDataURL('image/png');
-      link.click();
+    var stationName = $('#stamp-station-name').textContent || 'card';
+    saveCardAsImage($('#stamp-card'), stationName, function() {
       btn.disabled = false;
-      btn.innerHTML = '<i class="fa-solid fa-download"></i> 저장';
-    }).catch(function() {
-      showError('이미지 저장에 실패했습니다');
-      btn.disabled = false;
-      btn.innerHTML = '<i class="fa-solid fa-download"></i> 저장';
+      btn.textContent = '';
+      var icon = document.createElement('i');
+      icon.className = 'fa-solid fa-download';
+      btn.appendChild(icon);
+      btn.appendChild(document.createTextNode(' 저장'));
     });
   });
 </script>

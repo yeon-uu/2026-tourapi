@@ -88,6 +88,62 @@ function getStampPhoto(stationId) {
   return localStorage.getItem('stamp_photo_' + stationId) || null;
 }
 
+// --- Safari 호환 카드 이미지 저장 ---
+// html2canvas로 캡처 후 Web Share API → blob download fallback
+function saveCardAsImage(cardEl, stationName, onDone) {
+  html2canvas(cardEl, {
+    scale: 2,
+    useCORS: true,
+    backgroundColor: '#ffffff'
+  }).then(function(canvas) {
+    var filename = 'aido-stamp-' + stationName + '.png';
+
+    // 1순위: Web Share API (모바일 Safari + Android)
+    if (navigator.share) {
+      canvas.toBlob(function(blob) {
+        if (!blob) { downloadCanvasBlob(canvas, filename); if (onDone) onDone(); return; }
+        var file = new File([blob], filename, { type: 'image/png' });
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          navigator.share({ files: [file], title: '아이두 스탬프' })
+            .catch(function() {
+              // 공유 취소 시 다운로드 시도
+              downloadCanvasBlob(canvas, filename);
+            })
+            .finally(function() { if (onDone) onDone(); });
+        } else {
+          downloadCanvasBlob(canvas, filename);
+          if (onDone) onDone();
+        }
+      }, 'image/png');
+    } else {
+      // 2순위: blob URL 다운로드 (데스크탑 Chrome 등)
+      downloadCanvasBlob(canvas, filename);
+      if (onDone) onDone();
+    }
+  }).catch(function() {
+    showError('이미지 저장에 실패했습니다');
+    if (onDone) onDone();
+  });
+}
+
+// blob URL로 다운로드 (Safari <a download> 호환)
+function downloadCanvasBlob(canvas, filename) {
+  canvas.toBlob(function(blob) {
+    if (!blob) {
+      showError('이미지 생성에 실패했습니다');
+      return;
+    }
+    var url = URL.createObjectURL(blob);
+    var link = document.createElement('a');
+    link.download = filename;
+    link.href = url;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    setTimeout(function() { URL.revokeObjectURL(url); }, 5000);
+  }, 'image/png');
+}
+
 // 사진 영역에 이미지 표시 (공통)
 function displayPhotoInArea(photoArea, src) {
   var existing = photoArea.querySelector('img');

@@ -22,8 +22,15 @@
       <div class="card-wrapper">
         <div class="card" id="card-inner">
           <div class="card-face card-back">
-            <div class="card-logo">🚂</div>
-            <p>어디로 가게 될까요?</p>
+            <img src="/images/dudu.png" alt="두두" class="card-dudu-img">
+            <div class="card-back-speech">
+              <p>어디로 떠나볼까 멍? 🐾</p>
+            </div>
+            <div class="card-back-info" id="card-back-info">
+              <span class="card-info-tag">📱 디지털주민증</span>
+              <span class="card-info-tag">🌙 야간활성화</span>
+              <span class="card-info-tag">🎫 반값여행</span>
+            </div>
           </div>
           <div class="card-face card-front" id="card-result">
             <span class="rank-badge" id="res-rank"></span>
@@ -53,6 +60,20 @@
     <div class="result-actions" id="result-actions" style="display:none">
       <button class="action-btn retry-btn" id="btn-retry">다시 뽑기</button>
       <button class="action-btn mission-btn" id="btn-mission">미션 받기 <i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+  </div>
+
+  <!-- ===== 단계 1.5: 두두 대화 (취향 선택) ===== -->
+  <div id="step-chat" class="screen">
+    <header class="chat-header">
+      <button class="chat-back-btn" id="btn-back-chat"><i class="fa-solid fa-chevron-left"></i></button>
+      <div class="chat-title-bar">두두와 대화 중... <div class="chat-status-dot"></div></div>
+      <div style="width:20px"></div>
+    </header>
+    <div class="chat-container" id="chat-container"></div>
+    <div class="chat-options-area" id="chat-options-area">
+      <div class="chat-chips" id="chat-chips"></div>
+      <button class="chat-finish-btn" id="chat-finish-btn" style="display:none">미션 만들어줘! 🚀</button>
     </div>
   </div>
 
@@ -147,6 +168,7 @@
 <script src="/js/common.js"></script>
 <script src="/js/auth.js"></script>
 <script src="/js/api.js"></script>
+<script src="/js/chat.js"></script>
 <script src="/js/main.js"></script>
 
 </body>
