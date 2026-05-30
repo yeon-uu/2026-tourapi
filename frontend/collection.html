@@ -38,6 +38,11 @@
 <!-- 스탬프 카드 모달 -->
 <div class="stamp-modal-overlay" id="stamp-modal">
   <button class="stamp-modal-close" id="modal-close"><i class="fa-solid fa-xmark"></i></button>
+
+  <!-- 좌우 화살표 (카드 2장 이상일 때만 표시) -->
+  <button class="swipe-arrow swipe-left" id="swipe-left" style="display:none"><i class="fa-solid fa-chevron-left"></i></button>
+  <button class="swipe-arrow swipe-right" id="swipe-right" style="display:none"><i class="fa-solid fa-chevron-right"></i></button>
+
   <div class="stamp-card" id="modal-stamp-card">
     <div class="stamp-photo-area" id="modal-photo-area">
       <div class="photo-placeholder">
@@ -54,6 +59,8 @@
         <span class="rank-badge" id="modal-rank"></span>
       </div>
       <div class="stamp-line-name" id="modal-line"></div>
+      <!-- 카드 타입 라벨 -->
+      <div class="card-type-label" id="modal-card-type"></div>
       <div class="stamp-divider"></div>
       <div class="stamp-footer">
         <div class="stamp-date" id="modal-date"></div>
@@ -61,6 +68,9 @@
       </div>
     </div>
   </div>
+
+  <!-- 스와이프 도트 -->
+  <div class="swipe-dots" id="swipe-dots"></div>
 </div>
 
 <script src="/js/common.js"></script>

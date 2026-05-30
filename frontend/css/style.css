@@ -522,6 +522,74 @@ select.custom-input.selected { color: var(--text-main); }
   display: flex; align-items: center; justify-content: center;
 }
 
+/* 스와이프 화살표 */
+.swipe-arrow {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  z-index: 110; background: rgba(255,255,255,0.85); border: none;
+  width: 36px; height: 36px; border-radius: 50%;
+  font-size: 16px; color: var(--text-main); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  transition: transform 0.15s;
+}
+.swipe-arrow:active { transform: translateY(-50%) scale(0.9); }
+.swipe-left { left: 10px; }
+.swipe-right { right: 10px; }
+
+/* 스와이프 도트 */
+.swipe-dots {
+  display: none; position: absolute; bottom: 60px;
+  left: 50%; transform: translateX(-50%);
+  gap: 8px; z-index: 110;
+}
+.swipe-dots.visible { display: flex; }
+.swipe-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: rgba(255,255,255,0.4); transition: all 0.3s;
+}
+.swipe-dot.active {
+  background: #fff; width: 20px; border-radius: 4px;
+}
+
+/* 카드 타입 라벨 */
+.card-type-label {
+  display: none; font-size: 11px; font-weight: 800;
+  padding: 3px 10px; border-radius: 8px; margin-top: 6px;
+  width: fit-content;
+}
+.card-type-label.type-normal {
+  display: inline-block;
+  background: #f0f0f0; color: #999;
+}
+.card-type-label.type-special {
+  display: inline-block;
+  background: linear-gradient(135deg, #FFD700, #FF6B6B);
+  color: #fff;
+}
+
+/* 멀티 카드 뱃지 (노드 위) */
+.multi-card-badge {
+  position: absolute; top: -4px; right: -4px;
+  background: linear-gradient(135deg, #FFD700, #FF6B6B);
+  color: #fff; font-size: 9px; font-weight: 900;
+  width: 16px; height: 16px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+}
+
+/* 모달 카드 special shimmer */
+.stamp-card.special-modal {
+  border: 3px solid transparent; position: relative;
+}
+.stamp-card.special-modal::before {
+  content: ''; position: absolute;
+  top: -3px; left: -3px; right: -3px; bottom: -3px;
+  border-radius: 10px; z-index: -1;
+  background: linear-gradient(135deg, #FFD700, #FF6B6B, #A855F7, #3B82F6, #FFD700);
+  background-size: 300% 300%;
+  animation: shimmerBorder 3s ease infinite;
+}
+
 /* --- 컬렉션 --- */
 .collection-summary {
   background: #fff; width: 100%; padding: 25px 20px; border-radius: 20px;
@@ -569,6 +637,7 @@ select.custom-input.selected { color: var(--text-main); }
   width: 36px; height: 36px; border-radius: 50%; background: #f5f5f5;
   border: 3px solid #ccc; display: flex; align-items: center; justify-content: center;
   margin-bottom: 10px; transition: all 0.3s; color: #ccc; font-size: 14px;
+  position: relative;
 }
 .node-name { font-size: 13px; font-weight: 700; color: #999; text-align: center; word-break: keep-all; }
 .track-node.unlocked { cursor: pointer; }

@@ -3,10 +3,14 @@
 
 requireAuth();
 
-// 스탬프 데이터를 전역으로 저장 (모달용)
-var stampMap = {};
+// 스탬프 데이터: station_id → [stamp, stamp, ...] (멀티카드 지원)
+var stampsByStation = {};
 
-// 노선별 색상 (시각적 구분)
+// 모달 스와이프 상태
+var modalCards = [];   // 현재 모달에 표시 중인 스탬프 배열
+var modalIndex = 0;    // 현재 보고 있는 카드 인덱스
+
+// 노선별 색상
 var ROUTE_COLORS = {
   '경부선': '#E74C3C',
   '경강선(강릉선)': '#3498DB',
@@ -20,42 +24,40 @@ var ROUTE_COLORS = {
 
 async function loadCollection() {
   try {
-    // 3가지 데이터 동시 호출
     var results = await Promise.all([getStations(), getStamps(), getRoutes()]);
     var stations = results[0];
     var stamps = results[1];
     var routes = results[2];
 
-    // station name → station 객체 맵
+    // station name → station 객체
     var stationByName = {};
-    stations.forEach(function(s) {
-      stationByName[s.name] = s;
-    });
+    stations.forEach(function(s) { stationByName[s.name] = s; });
 
-    // 스탬프 맵 생성 (station_id → stamp 데이터)
+    // 스탬프를 station_id별 배열로 그룹핑
     stamps.forEach(function(s) {
-      stampMap[s.station_id] = s;
+      if (!stampsByStation[s.station_id]) {
+        stampsByStation[s.station_id] = [];
+      }
+      stampsByStation[s.station_id].push(s);
     });
-    var stampedIds = new Set(stamps.map(function(s) { return s.station_id; }));
 
+    var stampedIds = new Set(Object.keys(stampsByStation).map(Number));
+
+    // 전체 달성률 (고유 역 수 기준)
     var totalStations = stations.length;
     var collected = stampedIds.size;
-
-    // 전체 달성률 업데이트
     $('#total-rate').textContent = collected + ' / ' + totalStations + ' 역';
     var pct = totalStations > 0 ? (collected / totalStations * 100) : 0;
     $('#total-progress').style.width = pct + '%';
 
-    // 기찻길 렌더링 (ROUTES 순서대로)
+    // 기찻길 렌더링
     var container = $('#railway-container');
     container.textContent = '';
 
-    var routeNames = Object.keys(routes);
-    routeNames.forEach(function(routeName) {
+    Object.keys(routes).forEach(function(routeName) {
       var stationNames = routes[routeName];
       var routeColor = ROUTE_COLORS[routeName] || '#999';
 
-      // 이 노선의 수집 현황 계산
       var routeTotal = 0;
       var routeCollected = 0;
       var stationList = [];
@@ -65,8 +67,9 @@ async function loadCollection() {
         if (st) {
           routeTotal++;
           var unlocked = stampedIds.has(st.id);
+          var cardCount = unlocked ? stampsByStation[st.id].length : 0;
           if (unlocked) routeCollected++;
-          stationList.push({ id: st.id, name: st.name, unlocked: unlocked });
+          stationList.push({ id: st.id, name: st.name, unlocked: unlocked, cardCount: cardCount });
         }
       });
 
@@ -74,7 +77,7 @@ async function loadCollection() {
       var section = document.createElement('div');
       section.className = 'rail-section';
 
-      // 노선 헤더 (이름 + 수집률)
+      // 노선 헤더
       var header = document.createElement('div');
       header.className = 'route-header';
 
@@ -92,9 +95,7 @@ async function loadCollection() {
       var countBadge = document.createElement('span');
       countBadge.className = 'route-count';
       countBadge.textContent = routeCollected + '/' + routeTotal;
-      if (routeCollected === routeTotal && routeTotal > 0) {
-        countBadge.classList.add('complete');
-      }
+      if (routeCollected === routeTotal && routeTotal > 0) countBadge.classList.add('complete');
 
       titleWrap.appendChild(colorDot);
       titleWrap.appendChild(titleText);
@@ -102,7 +103,7 @@ async function loadCollection() {
       header.appendChild(countBadge);
       section.appendChild(header);
 
-      // 노선 미니 진행바
+      // 미니 진행바
       var miniTrack = document.createElement('div');
       miniTrack.className = 'route-mini-progress';
       var miniFill = document.createElement('div');
@@ -112,7 +113,7 @@ async function loadCollection() {
       miniTrack.appendChild(miniFill);
       section.appendChild(miniTrack);
 
-      // 트랙 컨테이너
+      // 트랙
       var trackContainer = document.createElement('div');
       trackContainer.className = 'track-container';
 
@@ -125,7 +126,6 @@ async function loadCollection() {
         var node = document.createElement('div');
         node.className = 'track-node' + (station.unlocked ? ' unlocked' : '');
 
-        // 원형 아이콘
         var circle = document.createElement('div');
         circle.className = 'node-circle';
         if (station.unlocked) {
@@ -136,7 +136,14 @@ async function loadCollection() {
         icon.className = station.unlocked ? 'fa-solid fa-train' : 'fa-solid fa-lock';
         circle.appendChild(icon);
 
-        // 역 이름
+        // 멀티 카드 뱃지 (2장 이상일 때)
+        if (station.cardCount > 1) {
+          var badge = document.createElement('div');
+          badge.className = 'multi-card-badge';
+          badge.textContent = station.cardCount;
+          circle.appendChild(badge);
+        }
+
         var nameEl = document.createElement('div');
         nameEl.className = 'node-name';
         nameEl.textContent = station.name.replace('역', '');
@@ -165,14 +172,8 @@ async function loadCollection() {
   }
 }
 
-// --- 스탬프 폴라로이드 모달 ---
-function openStampModal(stationId) {
-  var stamp = stampMap[stationId];
-  if (!stamp) {
-    showError('스탬프 데이터를 찾을 수 없습니다');
-    return;
-  }
-
+// --- 모달: 스탬프 카드 표시 ---
+function renderModalCard(stamp) {
   $('#modal-station-name').textContent = stamp.station_name;
   $('#modal-rank').textContent = rarityLabel(stamp.rarity);
   $('#modal-rank').className = 'rank-badge ' + stamp.rarity;
@@ -180,7 +181,18 @@ function openStampModal(stationId) {
   $('#modal-date').textContent = formatDate(stamp.acquired_at);
   $('#modal-author').textContent = 'by. ' + getNickname();
 
-  // 사진 영역 초기화
+  // 카드 타입 라벨
+  var typeLabel = $('#modal-card-type');
+  typeLabel.className = 'card-type-label';
+  if (stamp.card_type === 'special') {
+    typeLabel.classList.add('type-special');
+    typeLabel.textContent = 'SPECIAL';
+  } else {
+    typeLabel.classList.add('type-normal');
+    typeLabel.textContent = 'NORMAL';
+  }
+
+  // 사진 영역
   var modalPhoto = $('#modal-photo-area');
   var placeholder = modalPhoto.querySelector('.photo-placeholder');
   var existingImg = modalPhoto.querySelector('img');
@@ -190,7 +202,6 @@ function openStampModal(stationId) {
   if (oldCredit) oldCredit.remove();
 
   if (stamp.illustration_url) {
-    // 일러스트 카드
     displayPhotoInArea(modalPhoto, stamp.illustration_url);
     modalPhoto.classList.add('illustration-locked');
     if (stamp.illustration_credit) {
@@ -208,19 +219,126 @@ function openStampModal(stationId) {
     }
   }
 
+  // 카드 shimmer (special이면 적용)
+  var card = $('#modal-stamp-card');
+  card.classList.remove('special-modal');
+  if (stamp.card_type === 'special') {
+    card.classList.add('special-modal');
+  }
+}
+
+// --- 스와이프 도트 렌더 ---
+function renderSwipeDots() {
+  var dotsEl = $('#swipe-dots');
+  dotsEl.textContent = '';
+
+  if (modalCards.length <= 1) {
+    dotsEl.classList.remove('visible');
+    return;
+  }
+
+  dotsEl.classList.add('visible');
+  modalCards.forEach(function(_, i) {
+    var dot = document.createElement('div');
+    dot.className = 'swipe-dot' + (i === modalIndex ? ' active' : '');
+    dot.addEventListener('click', function() {
+      modalIndex = i;
+      renderModalCard(modalCards[modalIndex]);
+      renderSwipeDots();
+    });
+    dotsEl.appendChild(dot);
+  });
+}
+
+// --- 화살표 표시/숨김 ---
+function updateSwipeArrows() {
+  var leftBtn = $('#swipe-left');
+  var rightBtn = $('#swipe-right');
+
+  if (modalCards.length <= 1) {
+    leftBtn.style.display = 'none';
+    rightBtn.style.display = 'none';
+    return;
+  }
+
+  leftBtn.style.display = modalIndex > 0 ? 'flex' : 'none';
+  rightBtn.style.display = modalIndex < modalCards.length - 1 ? 'flex' : 'none';
+}
+
+// --- 모달 열기 ---
+function openStampModal(stationId) {
+  var stamps = stampsByStation[stationId];
+  if (!stamps || stamps.length === 0) {
+    showError('스탬프 데이터를 찾을 수 없습니다');
+    return;
+  }
+
+  modalCards = stamps;
+  modalIndex = 0;
+
+  renderModalCard(modalCards[0]);
+  renderSwipeDots();
+  updateSwipeArrows();
+
   $('#stamp-modal').classList.add('active');
 }
 
-// 모달 닫기 — X 버튼
+// --- 화살표 클릭 ---
+$('#swipe-left').addEventListener('click', function(e) {
+  e.stopPropagation();
+  if (modalIndex > 0) {
+    modalIndex--;
+    renderModalCard(modalCards[modalIndex]);
+    renderSwipeDots();
+    updateSwipeArrows();
+  }
+});
+
+$('#swipe-right').addEventListener('click', function(e) {
+  e.stopPropagation();
+  if (modalIndex < modalCards.length - 1) {
+    modalIndex++;
+    renderModalCard(modalCards[modalIndex]);
+    renderSwipeDots();
+    updateSwipeArrows();
+  }
+});
+
+// --- 터치 스와이프 ---
+var touchStartX = 0;
+var touchEndX = 0;
+
+$('#stamp-modal').addEventListener('touchstart', function(e) {
+  touchStartX = e.changedTouches[0].screenX;
+}, { passive: true });
+
+$('#stamp-modal').addEventListener('touchend', function(e) {
+  touchEndX = e.changedTouches[0].screenX;
+  var diff = touchStartX - touchEndX;
+
+  if (modalCards.length <= 1) return;
+
+  if (diff > 50 && modalIndex < modalCards.length - 1) {
+    // 왼쪽 스와이프 → 다음 카드
+    modalIndex++;
+    renderModalCard(modalCards[modalIndex]);
+    renderSwipeDots();
+    updateSwipeArrows();
+  } else if (diff < -50 && modalIndex > 0) {
+    // 오른쪽 스와이프 → 이전 카드
+    modalIndex--;
+    renderModalCard(modalCards[modalIndex]);
+    renderSwipeDots();
+    updateSwipeArrows();
+  }
+}, { passive: true });
+
+// --- 모달 닫기 ---
 $('#modal-close').addEventListener('click', function() {
   $('#stamp-modal').classList.remove('active');
 });
-
-// 모달 닫기 — 배경 클릭
 $('#stamp-modal').addEventListener('click', function(e) {
-  if (e.target === this) {
-    this.classList.remove('active');
-  }
+  if (e.target === this) this.classList.remove('active');
 });
 
 loadCollection();
