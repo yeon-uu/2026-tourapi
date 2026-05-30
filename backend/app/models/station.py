@@ -16,4 +16,5 @@ class Station(Base):
     lng: Mapped[float] = mapped_column(Float, nullable=False)
     region_type: Mapped[str] = mapped_column(String(20), nullable=False)  # normal / depopulated
     weight: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
+    description: Mapped[str | None] = mapped_column(String(200), nullable=True)
     stamp_image_url: Mapped[str | None] = mapped_column(String(255), nullable=True)

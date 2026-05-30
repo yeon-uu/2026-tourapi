@@ -9,5 +9,6 @@ class StationResponse(BaseModel):
     requires_transfer: bool
     region_type: str
     weight: int
+    description: str | None = None
 
     model_config = {"from_attributes": True}
