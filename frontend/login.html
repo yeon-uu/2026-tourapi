@@ -86,6 +86,11 @@
       show(errorEl);
       return;
     }
+    if (/[<>"'&\\\/]/.test(nickname)) {
+      errorEl.textContent = '닉네임에 특수문자는 사용할 수 없습니다';
+      show(errorEl);
+      return;
+    }
     if (!stationId) {
       errorEl.textContent = '출발역을 선택해주세요';
       show(errorEl);

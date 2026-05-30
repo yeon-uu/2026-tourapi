@@ -406,6 +406,11 @@ $('#stamp-photo-area').addEventListener('click', function() {
 $('#stamp-photo-input').addEventListener('change', function(e) {
   var file = e.target.files[0];
   if (!file) return;
+  if (file.size > 5 * 1024 * 1024) {
+    showError('사진은 5MB 이하만 가능합니다');
+    e.target.value = '';
+    return;
+  }
 
   var reader = new FileReader();
   reader.onload = function(ev) {
