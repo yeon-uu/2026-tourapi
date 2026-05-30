@@ -32,6 +32,7 @@ async def list_stamps(
             line_name=station.line_name,
             train_type=station.train_type,
             rarity=stamp.rarity,
+            card_type=stamp.card_type,
             acquired_at=stamp.acquired_at,
             illustration_url=station.illustration_url,
             illustration_credit=station.illustration_credit,

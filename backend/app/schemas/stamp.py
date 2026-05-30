@@ -10,6 +10,7 @@ class StampResponse(BaseModel):
     line_name: str
     train_type: str
     rarity: str
+    card_type: str = "normal"
     acquired_at: datetime
     illustration_url: str | None = None
     illustration_credit: str | None = None

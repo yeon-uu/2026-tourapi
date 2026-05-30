@@ -6,7 +6,7 @@ from sqlalchemy import and_, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.gacha import GachaDraw
-from app.models.stamp import Stamp, get_current_season
+from app.models.stamp import Stamp
 from app.models.station import Station
 
 MAX_DAILY_DRAWS = 50
@@ -25,29 +25,29 @@ async def get_today_draw_count(db: AsyncSession, user_id: int) -> int:
     return result.scalar_one()
 
 
-async def get_excluded_station_ids(db: AsyncSession, user_id: int, departure_station_id: int) -> set[int]:
-    current_season = get_current_season()
+async def get_excluded_pairs(db: AsyncSession, user_id: int) -> set[tuple[int, str]]:
+    """유저가 이미 보유한 (station_id, card_type) 조합 반환"""
     result = await db.execute(
-        select(Stamp.station_id).where(
-            and_(Stamp.user_id == user_id, Stamp.season == current_season)
-        )
+        select(Stamp.station_id, Stamp.card_type).where(Stamp.user_id == user_id)
     )
-    stamped_ids = set(result.scalars().all())
-    stamped_ids.add(departure_station_id)
-    return stamped_ids
+    return set(result.all())
+
+
+def determine_card_type(station: Station) -> str:
+    """일러스트 있으면 special, 없으면 normal"""
+    return "special" if station.illustration_url else "normal"
+
+
+def determine_rarity(station: Station) -> str:
+    """SSR = 시즌카드(일러스트), 나머지 전부 NORMAL"""
+    if station.illustration_url:
+        return "ssr"
+    return "normal"
 
 
 def pick_station_weighted(stations: list[Station]) -> Station:
     weights = [s.weight for s in stations]
     return random.choices(stations, weights=weights, k=1)[0]
-
-
-def determine_rarity(station: Station) -> str:
-    if station.train_type == "santa":
-        return "ssr"
-    if station.region_type == "depopulated":
-        return "rare"
-    return "normal"
 
 
 async def draw_gacha(db: AsyncSession, user_id: int, departure_station_id: int) -> dict:
@@ -58,20 +58,30 @@ async def draw_gacha(db: AsyncSession, user_id: int, departure_station_id: int) 
             detail=f"Daily draw limit reached ({MAX_DAILY_DRAWS}/day)",
         )
 
-    excluded_ids = await get_excluded_station_ids(db, user_id, departure_station_id)
+    # 유저가 보유한 (station_id, card_type) 조합
+    excluded_pairs = await get_excluded_pairs(db, user_id)
 
-    result = await db.execute(
-        select(Station).where(Station.id.notin_(excluded_ids))
-    )
-    available_stations = list(result.scalars().all())
+    # 전체 역 가져오기
+    result = await db.execute(select(Station))
+    all_stations = list(result.scalars().all())
 
-    if not available_stations:
+    # 출발역 제외 + 이미 같은 카드타입으로 스탬프 있는 역 제외
+    available = []
+    for s in all_stations:
+        if s.id == departure_station_id:
+            continue
+        ct = determine_card_type(s)
+        if (s.id, ct) not in excluded_pairs:
+            available.append(s)
+
+    if not available:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail="All stations collected! No more draws available.",
         )
 
-    station = pick_station_weighted(available_stations)
+    station = pick_station_weighted(available)
+    card_type = determine_card_type(station)
     rarity = determine_rarity(station)
 
     draw = GachaDraw(
@@ -96,4 +106,5 @@ async def draw_gacha(db: AsyncSession, user_id: int, departure_station_id: int) 
         "remaining_draws": remaining,
         "illustration_url": station.illustration_url,
         "illustration_credit": station.illustration_credit,
+        "card_type": card_type,
     }

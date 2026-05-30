@@ -332,6 +332,43 @@ select.custom-input.selected { color: var(--text-main); }
   75%      { transform: rotate(1.5deg) scale(1.01); }
 }
 
+/* --- ⓘ 확률 안내 버튼 + 모달 --- */
+.info-btn {
+  position: absolute; right: 20px; bottom: 18px;
+  background: none; border: none; color: #ccc;
+  font-size: 20px; cursor: pointer; padding: 5px;
+  transition: color 0.2s;
+}
+.info-btn:active { color: var(--accent-color); }
+.draw-controls { position: relative; }
+
+.info-modal-overlay {
+  display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.4); z-index: 200;
+  justify-content: center; align-items: center;
+}
+.info-modal-overlay.active { display: flex; }
+.info-modal {
+  background: #fff; border-radius: 20px; padding: 28px 24px;
+  width: 85%; max-width: 320px; text-align: center;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+  animation: modalPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.info-modal-title {
+  font-size: 18px; font-weight: 900; color: var(--text-main);
+  margin-bottom: 16px;
+}
+.info-modal-body {
+  text-align: left; font-size: 14px; color: #555;
+  line-height: 1.8; margin-bottom: 20px;
+}
+.info-modal-body p { margin: 0 0 6px; padding-left: 4px; }
+.info-modal-close {
+  background: var(--primary-color); color: #fff; border: none;
+  padding: 12px 40px; border-radius: 15px; font-size: 15px;
+  font-weight: 800; cursor: pointer; font-family: 'Pretendard', sans-serif;
+}
+
 /* --- 버튼 그룹 --- */
 .draw-controls, .result-actions { width: 100%; margin-top: 30px; }
 .result-actions { display: flex; gap: 10px; justify-content: center; }

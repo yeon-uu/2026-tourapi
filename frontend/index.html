@@ -56,6 +56,21 @@
       <button class="action-btn" id="main-draw-btn">
         뽑기! <span id="draw-count-display"></span>
       </button>
+      <button class="info-btn" id="btn-draw-info"><i class="fa-solid fa-circle-info"></i></button>
+    </div>
+
+    <!-- 확률 안내 팝업 -->
+    <div class="info-modal-overlay" id="info-modal">
+      <div class="info-modal">
+        <div class="info-modal-title">뽑기 확률 안내</div>
+        <div class="info-modal-body">
+          <p>전체 73개 역 중 랜덤으로 선택됩니다.</p>
+          <p>숨겨진 보석 같은 역은 더 자주 등장해요! 💎</p>
+          <p>같은 역이라도 시즌 카드는 새로 뽑을 수 있어요!</p>
+          <p>출발역은 뽑기에서 제외됩니다.</p>
+        </div>
+        <button class="info-modal-close" id="btn-close-info">확인</button>
+      </div>
     </div>
 
     <div class="result-actions" id="result-actions" style="display:none">

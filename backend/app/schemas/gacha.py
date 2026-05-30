@@ -14,6 +14,7 @@ class GachaDrawResponse(BaseModel):
     remaining_draws: int
     illustration_url: str | None = None
     illustration_credit: str | None = None
+    card_type: str = "normal"
 
     model_config = {"from_attributes": True}
 

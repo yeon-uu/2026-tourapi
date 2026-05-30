@@ -80,6 +80,17 @@ $('#chat-finish-btn').addEventListener('click', function() {
   completeChatSelection();
 });
 
+// ===== 확률 안내 모달 =====
+$('#btn-draw-info').addEventListener('click', function() {
+  $('#info-modal').classList.add('active');
+});
+$('#btn-close-info').addEventListener('click', function() {
+  $('#info-modal').classList.remove('active');
+});
+$('#info-modal').addEventListener('click', function(e) {
+  if (e.target === this) this.classList.remove('active');
+});
+
 // ===== 1. 뽑기 =====
 $('#main-draw-btn').addEventListener('click', drawCard);
 $('#btn-retry').addEventListener('click', resetCard);

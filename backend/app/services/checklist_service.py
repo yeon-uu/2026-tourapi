@@ -8,7 +8,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.checklist import Checklist
 from app.models.gacha import GachaDraw
-from app.models.stamp import Stamp, get_current_season
+from app.models.stamp import Stamp
+from app.models.station import Station
 from app.utils.sanitize import sanitize_missions
 
 MOCK_MISSIONS = [
@@ -83,6 +84,13 @@ async def complete_checklist(db: AsyncSession, checklist: Checklist, user_id: in
     )
     draw = draw_result.scalar_one()
 
+    # 역 정보로 card_type 판별
+    station_result = await db.execute(
+        select(Station).where(Station.id == draw.station_id)
+    )
+    station = station_result.scalar_one()
+    card_type = "special" if station.illustration_url else "normal"
+
     async with db.begin_nested():
         checklist.status = "done"
         checklist.completed_at = datetime.now(timezone.utc)
@@ -92,7 +100,7 @@ async def complete_checklist(db: AsyncSession, checklist: Checklist, user_id: in
             station_id=draw.station_id,
             checklist_id=checklist.id,
             rarity=draw.rarity,
-            season=get_current_season(),
+            card_type=card_type,
         )
         db.add(stamp)
 
