@@ -75,11 +75,6 @@ $('#btn-back-chat').addEventListener('click', function() {
   showStep('step-draw');
 });
 
-// 채팅 전송 버튼
-$('#chat-send-btn').addEventListener('click', function() {
-  handleChatSend();
-});
-
 // ===== 확률 안내 모달 =====
 $('#btn-draw-info').addEventListener('click', function() {
   $('#info-modal').classList.add('active');
@@ -589,4 +584,12 @@ function triggerStampSparkles() {
     else ctx.clearRect(0, 0, canvas.width, canvas.height);
   }
   animate();
+}
+
+// ===== 채팅 전송 버튼 (null-safe, 맨 끝) =====
+var _chatSendBtn = $('#chat-send-btn');
+if (_chatSendBtn) {
+  _chatSendBtn.addEventListener('click', function() {
+    handleChatSend();
+  });
 }
