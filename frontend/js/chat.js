@@ -194,36 +194,15 @@ function handleChatSend() {
   setTimeout(function() {
     hideChatTyping();
     var count = chatSelectedThemes.length;
+    var name = getNickname();
     if (count === CHAT_OPTIONS.length) {
-      addDuduChatMsg(['와우! 전부 다 골랐네! 욕심쟁이다멍! 😆', '최고의 종합 미션을 만들어줄게! 🎁']);
+      addDuduChatMsg(['와우! 전부 다 골랐다멍! 욕심쟁이멍! 😆', name + ' 님만의 특별한 미션 만들어줄게멍! 🎁']);
     } else if (count === 1 && chatSelectedThemes[0] === 'random') {
-      addDuduChatMsg(['오! 나한테 맡기는 거다멍?', '최고로 재밌게 짜줄게! 🎲']);
+      addDuduChatMsg(['나한테 맡기는 거다멍! 🎲', name + ' 님 최고로 재밌게 짜줄게멍!']);
     } else {
-      addDuduChatMsg([count + '개 취향 접수 완료! 📝', '지금 바로 미션을 만들어줄게!']);
+      addDuduChatMsg([count + '개 취향 접수 완료멍! 📝', name + ' 님만의 미션 바로 만들어줄게멍!']);
     }
     setTimeout(function() {
-      completeChatSelection();
-    }, 1500);
-  }, 1000);
-}
-
-// --- 최종 완료 → 미션 생성으로 전환 ---
-function completeChatSelection() {
-  var optionsArea = $('#chat-options-area');
-  optionsArea.style.display = 'none';
-
-  addUserChatMsg('이제 미션을 줘!');
-  showChatTyping();
-
-  setTimeout(function() {
-    hideChatTyping();
-    addDuduChatMsg([
-      '알겠다멍! 지금 바로 ' + getNickname() + ' 님만을 위한',
-      '특별한 체크리스트를 만들고 있어! 🚀'
-    ]);
-
-    setTimeout(function() {
-      // main.js의 receiveMissionWithThemes 호출
       receiveMissionWithThemes(chatSelectedThemes);
     }, 1500);
   }, 1000);
