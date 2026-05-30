@@ -75,9 +75,9 @@ $('#btn-back-chat').addEventListener('click', function() {
   showStep('step-draw');
 });
 
-// 채팅 완료 버튼 (chat.js에서도 사용)
-$('#chat-finish-btn').addEventListener('click', function() {
-  completeChatSelection();
+// 채팅 전송 버튼
+$('#chat-send-btn').addEventListener('click', function() {
+  handleChatSend();
 });
 
 // ===== 확률 안내 모달 =====

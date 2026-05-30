@@ -140,81 +140,70 @@ function hideChatTyping() {
   if (el) el.remove();
 }
 
-// --- 칩 렌더링 ---
+// --- 칩 렌더링 (토글 멀티셀렉트) ---
 function renderChatChips() {
   var chipsEl = $('#chat-chips');
-  var finishBtn = $('#chat-finish-btn');
   chipsEl.textContent = '';
-  finishBtn.style.display = 'none';
 
-  // 개별 옵션 칩
-  chatAvailableOptions.forEach(function(opt) {
+  CHAT_OPTIONS.forEach(function(opt) {
     var btn = document.createElement('button');
     btn.className = 'chat-chip-btn';
+    if (chatSelectedThemes.indexOf(opt.theme) !== -1) {
+      btn.classList.add('selected');
+    }
     btn.textContent = opt.text;
     btn.addEventListener('click', function() {
-      handleChatOptionSelect(opt);
+      toggleChip(opt.theme);
     });
     chipsEl.appendChild(btn);
   });
 
-  // 1개라도 선택 시 완료 버튼 (칩 영역 안에 배치)
-  if (chatSelectedThemes.length > 0) {
-    var doneBtn = document.createElement('button');
-    doneBtn.className = 'chat-chip-btn chat-done-btn';
-    if (chatAvailableOptions.length === 0) {
-      doneBtn.textContent = '오케이 완료! 미션 만들어줘 🚀';
-    } else {
-      doneBtn.textContent = '오케이 완료! 🚀';
-    }
-    doneBtn.addEventListener('click', function() {
-      completeChatSelection();
-    });
-    chipsEl.appendChild(doneBtn);
-  }
+  // 전송 버튼 활성화
+  var sendBtn = $('#chat-send-btn');
+  sendBtn.disabled = chatSelectedThemes.length === 0;
 }
 
-// --- 개별 칩 클릭 ---
-function handleChatOptionSelect(option) {
-  var optionsArea = $('#chat-options-area');
-  optionsArea.style.pointerEvents = 'none';
-  optionsArea.style.opacity = '0.5';
+// --- 칩 토글 ---
+function toggleChip(theme) {
+  var idx = chatSelectedThemes.indexOf(theme);
+  if (idx === -1) {
+    chatSelectedThemes.push(theme);
+  } else {
+    chatSelectedThemes.splice(idx, 1);
+  }
+  renderChatChips();
+}
 
-  addUserChatMsg(option.text);
-  chatSelectedThemes.push(option.theme);
-  chatAvailableOptions = chatAvailableOptions.filter(function(o) {
-    return o.id !== option.id;
+// --- 전송 버튼 클릭 (main.js에서 이벤트 등록) ---
+function handleChatSend() {
+  if (chatSelectedThemes.length === 0) return;
+
+  var optionsArea = $('#chat-options-area');
+  optionsArea.style.display = 'none';
+
+  // 선택한 테마를 유저 메시지로
+  var labels = chatSelectedThemes.map(function(t) {
+    for (var i = 0; i < CHAT_OPTIONS.length; i++) {
+      if (CHAT_OPTIONS[i].theme === t) return CHAT_OPTIONS[i].text;
+    }
+    return t;
   });
+  addUserChatMsg(labels.join(', '));
 
   showChatTyping();
   setTimeout(function() {
     hideChatTyping();
-
-    var responseLines;
-    if (chatAvailableOptions.length === 0) {
-      responseLines = [
-        '와우! 모든 취향을 다 골랐네! 욕심쟁이다멍! 😆',
-        '이제 바로 미션을 만들어줄게!'
-      ];
-    } else if (option.id === 'random') {
-      responseLines = [
-        '오! 나한테 맡기는 거다멍? 최고로 재밌게 짜줄게!',
-        '더 추가할 거 있어?'
-      ];
+    var count = chatSelectedThemes.length;
+    if (count === CHAT_OPTIONS.length) {
+      addDuduChatMsg(['와우! 전부 다 골랐네! 욕심쟁이다멍! 😆', '최고의 종합 미션을 만들어줄게! 🎁']);
+    } else if (count === 1 && chatSelectedThemes[0] === 'random') {
+      addDuduChatMsg(['오! 나한테 맡기는 거다멍?', '최고로 재밌게 짜줄게! 🎲']);
     } else {
-      responseLines = [
-        option.text + ' 취향 접수 완료! 📝',
-        '또 하고 싶은 거 있어 멍?'
-      ];
+      addDuduChatMsg([count + '개 취향 접수 완료! 📝', '지금 바로 미션을 만들어줄게!']);
     }
-
-    addDuduChatMsg(responseLines);
-
-    optionsArea.style.pointerEvents = 'auto';
-    optionsArea.style.opacity = '1';
-    renderChatChips();
-
-    // 자동 진행 ❌ → 모든 옵션 선택해도 완료 버튼으로 유저가 직접 진행
+    setTimeout(function() {
+      completeChatSelection();
+    }, 1500);
   }, 1000);
 }
 
@@ -246,18 +235,12 @@ function startChat() {
 
   // 상태 초기화
   chatSelectedThemes = [];
-  chatAvailableOptions = CHAT_OPTIONS.slice();
 
   var container = $('#chat-container');
   container.textContent = '';
 
   var optionsArea = $('#chat-options-area');
   optionsArea.style.display = '';
-  optionsArea.style.pointerEvents = 'auto';
-  optionsArea.style.opacity = '1';
-
-  var finishBtn = $('#chat-finish-btn');
-  finishBtn.style.display = 'none';
 
   showStep('step-chat');
 

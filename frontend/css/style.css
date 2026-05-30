@@ -72,7 +72,7 @@ body {
 
 /* 온보딩 사업 소개 티커 */
 .ticker-label {
-  font-size: 11px; font-weight: 700; color: #aaa; margin-top: 30px; margin-bottom: 6px;
+  font-size: 11px; font-weight: 700; color: #aaa; margin-top: 20px; margin-bottom: 6px;
   text-align: left; padding-left: 5px; letter-spacing: 0.5px;
 }
 .onboarding-ticker {
@@ -85,9 +85,10 @@ body {
   animation: tickerScroll 12s linear infinite;
 }
 .ticker-badge {
-  background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
-  color: white; padding: 8px 16px; border-radius: 20px;
+  background: rgba(255,255,255,0.7); backdrop-filter: blur(4px);
+  color: var(--text-main); padding: 8px 16px; border-radius: 20px;
   font-size: 13px; font-weight: 700; flex-shrink: 0;
+  border: 1px solid rgba(0,0,0,0.06);
 }
 @keyframes tickerScroll {
   0% { transform: translateX(0); }
@@ -735,7 +736,7 @@ select.custom-input.selected { color: var(--text-main); }
 .chat-agent-avatar {
   background: #fff; border-radius: 50%; width: 36px; height: 36px;
   display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05); overflow: hidden;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.15); overflow: hidden;
 }
 .chat-agent-avatar img { width: 100%; height: 100%; object-fit: cover; }
 .chat-agent-name { font-size: 13px; font-weight: 700; color: var(--text-muted); }
@@ -743,8 +744,8 @@ select.custom-input.selected { color: var(--text-main); }
   background: #fff; color: var(--text-main); padding: 12px 16px;
   border-radius: 4px 20px 20px 20px;
   font-size: 15px; font-weight: 600; line-height: 1.6;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.03);
-  border: 1px solid rgba(0,0,0,0.03);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  border: 1px solid rgba(0,0,0,0.04);
 }
 .chat-user-msg {
   align-self: flex-end; align-items: flex-end;
@@ -768,40 +769,50 @@ select.custom-input.selected { color: var(--text-main); }
 .chat-dot:nth-child(2) { animation-delay: -0.16s; }
 @keyframes chatDotBounce { 0%, 80%, 100% { transform: scale(0); } 40% { transform: scale(1); } }
 
-/* 하단 옵션 영역 */
-.chat-options-area {
-  padding: 12px 16px 90px 16px; background: #fff;
-  border-top: 1px solid rgba(0,0,0,0.05);
-  display: flex; flex-direction: column; gap: 8px;
-  transition: all 0.3s ease; flex-shrink: 0;
+/* 하단 선택 패널 */
+.chat-select-panel {
+  background: rgba(255,252,242,0.95); backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(0,0,0,0.06);
+  border-radius: 24px 24px 0 0;
+  padding: 20px 20px 90px 20px;
+  flex-shrink: 0;
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.06);
+  transition: all 0.3s ease;
 }
-.chat-chips { display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-start; }
-
+.chat-select-title {
+  font-size: 13px; font-weight: 700; color: var(--text-muted);
+  text-align: center; margin-bottom: 14px;
+}
+.chat-chips {
+  display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;
+}
 .chat-chip-btn {
-  background: #fff; border: 1.5px solid #e0e0e0; color: var(--text-main);
-  padding: 8px 14px; border-radius: 20px; font-size: 13px; font-weight: 700;
+  background: #fff; border: 2px solid #e0e0e0; color: var(--text-main);
+  padding: 10px 18px; border-radius: 24px; font-size: 14px; font-weight: 700;
   cursor: pointer; transition: all 0.2s;
   display: flex; align-items: center; gap: 6px;
   font-family: 'Pretendard', sans-serif;
 }
-.chat-chip-btn:active { transform: scale(0.95); background: #f9f9f9; }
-
-.chat-done-btn {
-  background: linear-gradient(135deg, #FFB703, #FB8500) !important;
-  color: white !important; border: none !important;
-  box-shadow: 0 3px 10px rgba(251, 133, 0, 0.3);
+.chat-chip-btn:active { transform: scale(0.95); }
+.chat-chip-btn.selected {
+  border-color: var(--accent-color);
+  background: var(--primary-light);
+  color: var(--accent-color);
+  box-shadow: 0 2px 8px rgba(251,133,0,0.15);
 }
-.chat-done-btn:active { transform: scale(0.97); }
-
-.chat-finish-btn {
-  width: 100%; background: var(--accent-color); color: white; border: none;
-  padding: 15px; border-radius: 20px; font-size: 16px; font-weight: 800;
-  cursor: pointer; margin-top: 5px;
-  box-shadow: 0 5px 15px rgba(251, 133, 0, 0.2);
-  animation: fadeIn 0.3s forwards;
-  font-family: 'Pretendard', sans-serif;
+.chat-send-row {
+  display: flex; justify-content: flex-end; margin-top: 14px;
 }
-.chat-finish-btn:active { transform: scale(0.98); }
+.chat-send-btn {
+  width: 48px; height: 48px; border-radius: 50%; border: none;
+  background: var(--accent-color); color: white;
+  font-size: 20px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 15px rgba(251,133,0,0.3);
+  transition: all 0.2s;
+}
+.chat-send-btn:disabled { background: #ccc; box-shadow: none; }
+.chat-send-btn:not(:disabled):active { transform: scale(0.9); }
 
 /* ========================================
    하단 3단계 진행바 (플로우 스텝)

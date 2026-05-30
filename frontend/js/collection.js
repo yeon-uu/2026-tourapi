@@ -73,6 +73,13 @@ async function loadCollection() {
         }
       });
 
+      // 언락된 역을 앞으로 정렬
+      stationList.sort(function(a, b) {
+        if (a.unlocked && !b.unlocked) return -1;
+        if (!a.unlocked && b.unlocked) return 1;
+        return 0;
+      });
+
       // 섹션
       var section = document.createElement('div');
       section.className = 'rail-section';
