@@ -301,8 +301,9 @@ function startChat() {
     showChatTyping();
     setTimeout(function() {
       hideChatTyping();
+      var chatStName = currentDraw.station_name.endsWith('역') ? currentDraw.station_name : currentDraw.station_name + '역';
       addDuduChatMsg([
-        '멍! ' + currentDraw.station_name + '역에 도착했네!',
+        '멍! ' + chatStName + '에 도착했네!',
         getNickname() + ' 님은 어떤 스타일의 여행을 좋아해?',
         '아래에서 편하게 골라봐멍! 🐾'
       ]);

@@ -166,7 +166,8 @@ function playFateAnimation() {
     show('#result-actions');
 
     // 두두 가이드 메시지 업데이트 (사업 정보는 AI 서버 연결 후 교체)
-    $('#dudu-guide-text').textContent = currentDraw.station_name + '역에 도착했다멍! 🚂';
+    var guideName = currentDraw.station_name.endsWith('역') ? currentDraw.station_name : currentDraw.station_name + '역';
+    $('#dudu-guide-text').textContent = guideName + '에 도착했다멍! 🚂';
     $('#result-actions').style.display = 'flex';
   }, 4000);
 }
