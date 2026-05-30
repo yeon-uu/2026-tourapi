@@ -779,12 +779,12 @@ select.custom-input.selected { color: var(--text-main); }
 
 .chat-select-all {
   width: 100%; justify-content: center;
-  background: linear-gradient(135deg, #FFB703, #FB8500);
-  color: white; border: none;
-  box-shadow: 0 4px 12px rgba(251, 133, 0, 0.3);
-  font-size: 15px; padding: 12px; margin-top: 5px;
+  background: transparent;
+  color: var(--accent-color); border: 1.5px dashed var(--accent-color);
+  font-size: 13px; padding: 10px; margin-top: 5px;
+  opacity: 0.75;
 }
-.chat-select-all:active { transform: scale(0.97); }
+.chat-select-all:active { transform: scale(0.97); opacity: 1; }
 
 .chat-finish-btn {
   width: 100%; background: var(--accent-color); color: white; border: none;

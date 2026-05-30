@@ -149,7 +149,7 @@ function renderChatChips() {
   // 남은 옵션이 없으면 완료 버튼만
   if (chatAvailableOptions.length === 0) {
     finishBtn.style.display = 'block';
-    finishBtn.textContent = '선택 완료! 완벽한 미션을 줘! 🚀';
+    finishBtn.textContent = chatSelectedThemes.length + '개 테마 선택 완료! 미션 만들어줘! 🚀';
     return;
   }
 
@@ -183,7 +183,6 @@ function renderChatChips() {
 // --- "몽땅 다 선택할래!" ---
 function selectAllChatOptions() {
   var optionsArea = $('#chat-options-area');
-  optionsArea.style.display = 'none';
 
   addUserChatMsg('전부 다 할래! 몽땅 섞어줘! ✨');
 
@@ -192,16 +191,22 @@ function selectAllChatOptions() {
   });
   chatAvailableOptions = [];
 
+  // 칩 영역 일시 비활성화
+  optionsArea.style.pointerEvents = 'none';
+  optionsArea.style.opacity = '0.5';
+
   showChatTyping();
   setTimeout(function() {
     hideChatTyping();
     addDuduChatMsg([
       '와우! ' + getNickname() + ' 님 완전 욕심쟁이다멍! 😆',
-      '최고의 종합 선물 세트 미션을 만들어줄게! 🎁'
+      '준비되면 아래 버튼 눌러줘! 🎁'
     ]);
-    setTimeout(function() {
-      completeChatSelection();
-    }, 1500);
+
+    // 자동 진행 ❌ → 완료 버튼 표시하여 유저가 직접 진행
+    optionsArea.style.pointerEvents = 'auto';
+    optionsArea.style.opacity = '1';
+    renderChatChips();
   }, 1000);
 }
 
@@ -245,11 +250,7 @@ function handleChatOptionSelect(option) {
     optionsArea.style.opacity = '1';
     renderChatChips();
 
-    if (chatAvailableOptions.length === 0) {
-      setTimeout(function() {
-        completeChatSelection();
-      }, 1500);
-    }
+    // 자동 진행 ❌ → 모든 옵션 선택해도 완료 버튼으로 유저가 직접 진행
   }, 1000);
 }
 
