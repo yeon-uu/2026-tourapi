@@ -439,23 +439,23 @@ select.custom-input.selected { color: var(--text-main); }
 @keyframes spin { to { transform: rotate(360deg); } }
 
 /* ========================================
-   카드 뒷면 — 두두 + 관광 프로그램 정보
+   두두 가이드 말풍선 (뽑기 화면 상단)
 ======================================== */
-.card-dudu-img {
-  width: 80px; height: 80px; border-radius: 50%; object-fit: cover;
-  border: 3px solid white; margin-bottom: 10px;
-  animation: float 2s infinite ease-in-out;
+.dudu-guide {
+  display: flex; align-items: center; gap: 10px;
+  width: 100%; padding: 0 5px; margin-bottom: 10px;
 }
-.card-back-speech {
-  background: rgba(255,255,255,0.2); border-radius: 15px; padding: 8px 18px;
-  margin-bottom: 14px; font-size: 16px; font-weight: 700; text-align: center;
+.dudu-guide-avatar {
+  width: 42px; height: 42px; border-radius: 50%; overflow: hidden;
+  flex-shrink: 0; border: 2px solid var(--primary-light);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
 }
-.card-back-info {
-  display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; padding: 0 12px;
-}
-.card-info-tag {
-  background: rgba(255,255,255,0.25); padding: 5px 10px; border-radius: 12px;
-  font-size: 11px; font-weight: 700; color: white;
+.dudu-guide-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.dudu-guide-bubble {
+  background: #FFF9E6; padding: 10px 16px; border-radius: 4px 18px 18px 18px;
+  font-size: 14px; font-weight: 700; color: var(--text-main); line-height: 1.5;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04); border: 1px solid rgba(255,183,3,0.15);
+  animation: fadeIn 0.4s ease-out;
 }
 
 /* ========================================

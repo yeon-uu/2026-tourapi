@@ -117,6 +117,9 @@ function playFateAnimation() {
     triggerSparkles();
     hide('#draw-controls');
     show('#result-actions');
+
+    // 두두 가이드 메시지 업데이트 (사업 정보는 AI 서버 연결 후 교체)
+    $('#dudu-guide-text').textContent = currentDraw.station_name + '역에 도착했다멍! 🚂';
     $('#result-actions').style.display = 'flex';
   }, 4000);
 }
@@ -128,6 +131,9 @@ function resetCard() {
   canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
   cardInner.classList.remove('is-flipped');
   cardBack.classList.remove('hide-content');
+
+  // 두두 가이드 메시지 원복
+  $('#dudu-guide-text').textContent = '어서 뽑기 버튼을 눌러봐라 멍! 🐾';
 
   setTimeout(function() {
     show('#draw-controls');
