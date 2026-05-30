@@ -64,7 +64,30 @@ body {
 .logo-wrapper { text-align: center; margin-bottom: 20px; }
 .logo-icon { font-size: 40px; margin-bottom: 10px; display: inline-block; }
 .logo-dudu { width: 100px; height: 100px; object-fit: contain; margin-bottom: 10px; border-radius: 50%; }
-.logo-main { width: 180px; object-fit: contain; margin-bottom: 10px; }
+.logo-main {
+  height: 36px; width: auto; object-fit: contain; margin-bottom: 10px;
+  mix-blend-mode: multiply;
+}
+
+/* 온보딩 사업 소개 티커 */
+.onboarding-ticker {
+  width: 100%; overflow: hidden; margin-top: 30px;
+  mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+}
+.ticker-track {
+  display: flex; gap: 12px; white-space: nowrap;
+  animation: tickerScroll 12s linear infinite;
+}
+.ticker-badge {
+  background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+  color: white; padding: 8px 16px; border-radius: 20px;
+  font-size: 13px; font-weight: 700; flex-shrink: 0;
+}
+@keyframes tickerScroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
 .logo-text { font-size: 28px; font-weight: 900; margin: 0; color: var(--accent-color); letter-spacing: -0.5px; }
 .main-title { font-size: 24px; font-weight: 700; margin-bottom: 50px; color: var(--text-main); }
 
