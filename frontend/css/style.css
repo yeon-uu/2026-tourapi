@@ -777,13 +777,6 @@ select.custom-input.selected { color: var(--text-main); }
 }
 .chat-chip-btn:active { transform: scale(0.95); background: #f9f9f9; }
 
-.chat-select-all {
-  background: var(--primary-light);
-  color: var(--accent-color); border: 1.5px solid var(--accent-color);
-  font-size: 13px;
-}
-.chat-select-all:active { transform: scale(0.95); background: #FFE8C8; }
-
 .chat-finish-btn {
   width: 100%; background: var(--accent-color); color: white; border: none;
   padding: 15px; border-radius: 20px; font-size: 16px; font-weight: 800;

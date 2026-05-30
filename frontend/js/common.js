@@ -88,60 +88,79 @@ function getStampPhoto(stationId) {
   return localStorage.getItem('stamp_photo_' + stationId) || null;
 }
 
-// --- Safari 호환 카드 이미지 저장 ---
-// html2canvas로 캡처 후 Web Share API → blob download fallback
+// --- 카드 이미지 저장 (모바일 + 데스크탑 호환) ---
 function saveCardAsImage(cardEl, stationName, onDone) {
+  // 안전장치: 8초 안에 onDone 안 불리면 강제 복원
+  var done = false;
+  var safetyTimer = setTimeout(function() {
+    if (!done) { done = true; if (onDone) onDone(); }
+  }, 8000);
+
+  function finish() {
+    if (done) return;
+    done = true;
+    clearTimeout(safetyTimer);
+    if (onDone) onDone();
+  }
+
+  if (typeof html2canvas === 'undefined') {
+    showError('이미지 저장 라이브러리를 불러오지 못했습니다');
+    finish();
+    return;
+  }
+
   html2canvas(cardEl, {
     scale: 2,
     useCORS: true,
-    backgroundColor: '#ffffff'
+    backgroundColor: '#ffffff',
+    logging: false
   }).then(function(canvas) {
     var filename = 'aido-stamp-' + stationName + '.png';
+    var dataUrl = canvas.toDataURL('image/png');
 
-    // 1순위: Web Share API (모바일 Safari + Android)
+    // 1순위: Web Share API (모바일)
     if (navigator.share) {
       canvas.toBlob(function(blob) {
-        if (!blob) { downloadCanvasBlob(canvas, filename); if (onDone) onDone(); return; }
+        if (!blob) { openImageNewTab(dataUrl); finish(); return; }
         var file = new File([blob], filename, { type: 'image/png' });
         if (navigator.canShare && navigator.canShare({ files: [file] })) {
           navigator.share({ files: [file], title: '아이두 스탬프' })
-            .catch(function() {
-              // 공유 취소 시 다운로드 시도
-              downloadCanvasBlob(canvas, filename);
-            })
-            .finally(function() { if (onDone) onDone(); });
+            .then(finish)
+            .catch(function() { openImageNewTab(dataUrl); finish(); });
         } else {
-          downloadCanvasBlob(canvas, filename);
-          if (onDone) onDone();
+          openImageNewTab(dataUrl);
+          finish();
         }
       }, 'image/png');
     } else {
-      // 2순위: blob URL 다운로드 (데스크탑 Chrome 등)
-      downloadCanvasBlob(canvas, filename);
-      if (onDone) onDone();
+      // 2순위: <a download> (데스크탑 Chrome/Firefox)
+      try {
+        var link = document.createElement('a');
+        link.download = filename;
+        link.href = dataUrl;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } catch (e) {
+        openImageNewTab(dataUrl);
+      }
+      finish();
     }
   }).catch(function() {
     showError('이미지 저장에 실패했습니다');
-    if (onDone) onDone();
+    finish();
   });
 }
 
-// blob URL로 다운로드 (Safari <a download> 호환)
-function downloadCanvasBlob(canvas, filename) {
-  canvas.toBlob(function(blob) {
-    if (!blob) {
-      showError('이미지 생성에 실패했습니다');
-      return;
-    }
-    var url = URL.createObjectURL(blob);
-    var link = document.createElement('a');
-    link.download = filename;
-    link.href = url;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    setTimeout(function() { URL.revokeObjectURL(url); }, 5000);
-  }, 'image/png');
+// 모바일 fallback: 새 탭에서 이미지 열기 (길게 눌러 저장)
+function openImageNewTab(dataUrl) {
+  var w = window.open('');
+  if (w) {
+    w.document.write('<html><head><title>아이두 스탬프</title><meta name="viewport" content="width=device-width"></head><body style="margin:0;display:flex;justify-content:center;align-items:center;min-height:100vh;background:#f5f5f5"><img src="' + dataUrl + '" style="max-width:100%;height:auto"></body></html>');
+    w.document.close();
+  } else {
+    showError('팝업이 차단되었습니다. 길게 눌러 저장해주세요.');
+  }
 }
 
 // 사진 영역에 이미지 표시 (공통)

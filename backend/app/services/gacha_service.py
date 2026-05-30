@@ -45,8 +45,16 @@ def determine_rarity(station: Station) -> str:
     return "normal"
 
 
+SPECIAL_WEIGHT_BOOST = 6  # 일러스트 역 가중치 배율 (스페셜카드 출현율 ↑)
+
+
 def pick_station_weighted(stations: list[Station]) -> Station:
-    weights = [s.weight for s in stations]
+    weights = []
+    for s in stations:
+        w = s.weight
+        if s.illustration_url:
+            w *= SPECIAL_WEIGHT_BOOST
+        weights.append(w)
     return random.choices(stations, weights=weights, k=1)[0]
 
 
