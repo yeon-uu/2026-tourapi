@@ -770,16 +770,16 @@ select.custom-input.selected { color: var(--text-main); }
 
 /* 하단 옵션 영역 */
 .chat-options-area {
-  padding: 15px 20px 30px 20px; background: #fff;
+  padding: 12px 16px 90px 16px; background: #fff;
   border-top: 1px solid rgba(0,0,0,0.05);
-  display: flex; flex-direction: column; gap: 10px;
+  display: flex; flex-direction: column; gap: 8px;
   transition: all 0.3s ease; flex-shrink: 0;
 }
-.chat-chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: flex-start; }
+.chat-chips { display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-start; }
 
 .chat-chip-btn {
   background: #fff; border: 1.5px solid #e0e0e0; color: var(--text-main);
-  padding: 10px 16px; border-radius: 20px; font-size: 14px; font-weight: 700;
+  padding: 8px 14px; border-radius: 20px; font-size: 13px; font-weight: 700;
   cursor: pointer; transition: all 0.2s;
   display: flex; align-items: center; gap: 6px;
   font-family: 'Pretendard', sans-serif;
@@ -790,7 +790,6 @@ select.custom-input.selected { color: var(--text-main); }
   background: linear-gradient(135deg, #FFB703, #FB8500) !important;
   color: white !important; border: none !important;
   box-shadow: 0 3px 10px rgba(251, 133, 0, 0.3);
-  width: 100%;
 }
 .chat-done-btn:active { transform: scale(0.97); }
 
