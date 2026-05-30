@@ -149,11 +149,11 @@ function renderChatChips() {
   // 남은 옵션이 없으면 완료 버튼만
   if (chatAvailableOptions.length === 0) {
     finishBtn.style.display = 'block';
-    finishBtn.textContent = chatSelectedThemes.length + '개 테마 선택 완료! 미션 만들어줘! 🚀';
+    finishBtn.textContent = '오케이 완료! 미션 만들어줘 🚀';
     return;
   }
 
-  // 개별 옵션
+  // 개별 옵션 + "몽땅" 을 같은 줄 칩으로
   chatAvailableOptions.forEach(function(opt) {
     var btn = document.createElement('button');
     btn.className = 'chat-chip-btn';
@@ -164,11 +164,11 @@ function renderChatChips() {
     chipsEl.appendChild(btn);
   });
 
-  // 2개 이상이면 "몽땅 선택" 버튼
+  // 2개 이상이면 "몽땅" 칩 (같은 크기, 같은 줄)
   if (chatAvailableOptions.length > 1) {
     var allBtn = document.createElement('button');
     allBtn.className = 'chat-chip-btn chat-select-all';
-    allBtn.textContent = '✨ 몽땅 다 선택할래!';
+    allBtn.textContent = '✨ 몽땅!';
     allBtn.addEventListener('click', selectAllChatOptions);
     chipsEl.appendChild(allBtn);
   }
@@ -176,7 +176,7 @@ function renderChatChips() {
   // 1개라도 선택 시 완료 버튼
   if (chatSelectedThemes.length > 0) {
     finishBtn.style.display = 'block';
-    finishBtn.textContent = '현재 ' + chatSelectedThemes.length + '개 선택함! 미션 받을래 🚀';
+    finishBtn.textContent = '오케이 완료! 미션 받을래 🚀';
   }
 }
 
