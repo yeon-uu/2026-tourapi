@@ -6,53 +6,111 @@ requireAuth();
 // 스탬프 데이터를 전역으로 저장 (모달용)
 var stampMap = {};
 
+// 노선별 색상 (시각적 구분)
+var ROUTE_COLORS = {
+  '경부선': '#E74C3C',
+  '경강선(강릉선)': '#3498DB',
+  '경전선': '#2ECC71',
+  '전라선': '#9B59B6',
+  '호남선': '#F39C12',
+  '중앙선': '#1ABC9C',
+  '중부내륙선': '#E67E22',
+  '동해산타열차': '#E91E63'
+};
+
 async function loadCollection() {
   try {
-    var stations = await getStations();
-    var stamps = await getStamps();
+    // 3가지 데이터 동시 호출
+    var results = await Promise.all([getStations(), getStamps(), getRoutes()]);
+    var stations = results[0];
+    var stamps = results[1];
+    var routes = results[2];
+
+    // station name → station 객체 맵
+    var stationByName = {};
+    stations.forEach(function(s) {
+      stationByName[s.name] = s;
+    });
 
     // 스탬프 맵 생성 (station_id → stamp 데이터)
     stamps.forEach(function(s) {
       stampMap[s.station_id] = s;
     });
-
     var stampedIds = new Set(stamps.map(function(s) { return s.station_id; }));
-
-    // 노선별 그룹핑
-    var lineMap = {};
-    stations.forEach(function(s) {
-      if (!lineMap[s.line_name]) lineMap[s.line_name] = [];
-      lineMap[s.line_name].push({
-        id: s.id,
-        name: s.name,
-        unlocked: stampedIds.has(s.id),
-      });
-    });
 
     var totalStations = stations.length;
     var collected = stampedIds.size;
 
-    // 달성률 업데이트
+    // 전체 달성률 업데이트
     $('#total-rate').textContent = collected + ' / ' + totalStations + ' 역';
     var pct = totalStations > 0 ? (collected / totalStations * 100) : 0;
     $('#total-progress').style.width = pct + '%';
 
-    // 기찻길 렌더링
+    // 기찻길 렌더링 (ROUTES 순서대로)
     var container = $('#railway-container');
     container.textContent = '';
 
-    Object.keys(lineMap).sort().forEach(function(lineName) {
-      var stationList = lineMap[lineName];
+    var routeNames = Object.keys(routes);
+    routeNames.forEach(function(routeName) {
+      var stationNames = routes[routeName];
+      var routeColor = ROUTE_COLORS[routeName] || '#999';
+
+      // 이 노선의 수집 현황 계산
+      var routeTotal = 0;
+      var routeCollected = 0;
+      var stationList = [];
+
+      stationNames.forEach(function(name) {
+        var st = stationByName[name];
+        if (st) {
+          routeTotal++;
+          var unlocked = stampedIds.has(st.id);
+          if (unlocked) routeCollected++;
+          stationList.push({ id: st.id, name: st.name, unlocked: unlocked });
+        }
+      });
 
       // 섹션
       var section = document.createElement('div');
       section.className = 'rail-section';
 
-      // 노선 타이틀
-      var title = document.createElement('div');
-      title.className = 'rail-title';
-      title.textContent = lineName;
-      section.appendChild(title);
+      // 노선 헤더 (이름 + 수집률)
+      var header = document.createElement('div');
+      header.className = 'route-header';
+
+      var titleWrap = document.createElement('div');
+      titleWrap.className = 'route-title-wrap';
+
+      var colorDot = document.createElement('span');
+      colorDot.className = 'route-color-dot';
+      colorDot.style.background = routeColor;
+
+      var titleText = document.createElement('span');
+      titleText.className = 'route-title-text';
+      titleText.textContent = routeName;
+
+      var countBadge = document.createElement('span');
+      countBadge.className = 'route-count';
+      countBadge.textContent = routeCollected + '/' + routeTotal;
+      if (routeCollected === routeTotal && routeTotal > 0) {
+        countBadge.classList.add('complete');
+      }
+
+      titleWrap.appendChild(colorDot);
+      titleWrap.appendChild(titleText);
+      header.appendChild(titleWrap);
+      header.appendChild(countBadge);
+      section.appendChild(header);
+
+      // 노선 미니 진행바
+      var miniTrack = document.createElement('div');
+      miniTrack.className = 'route-mini-progress';
+      var miniFill = document.createElement('div');
+      miniFill.className = 'route-mini-fill';
+      miniFill.style.width = (routeTotal > 0 ? (routeCollected / routeTotal * 100) : 0) + '%';
+      miniFill.style.background = routeColor;
+      miniTrack.appendChild(miniFill);
+      section.appendChild(miniTrack);
 
       // 트랙 컨테이너
       var trackContainer = document.createElement('div');
@@ -60,6 +118,7 @@ async function loadCollection() {
 
       var trackLine = document.createElement('div');
       trackLine.className = 'track-line';
+      trackLine.style.background = 'repeating-linear-gradient(90deg, ' + routeColor + '33, ' + routeColor + '33 10px, transparent 10px, transparent 15px)';
       trackContainer.appendChild(trackLine);
 
       stationList.forEach(function(station) {
@@ -69,6 +128,10 @@ async function loadCollection() {
         // 원형 아이콘
         var circle = document.createElement('div');
         circle.className = 'node-circle';
+        if (station.unlocked) {
+          circle.style.background = routeColor;
+          circle.style.borderColor = routeColor;
+        }
         var icon = document.createElement('i');
         icon.className = station.unlocked ? 'fa-solid fa-train' : 'fa-solid fa-lock';
         circle.appendChild(icon);
@@ -76,18 +139,12 @@ async function loadCollection() {
         // 역 이름
         var nameEl = document.createElement('div');
         nameEl.className = 'node-name';
-        nameEl.textContent = station.name;
+        nameEl.textContent = station.name.replace('역', '');
 
         node.appendChild(circle);
         node.appendChild(nameEl);
 
-        if (!station.unlocked) {
-          var lockLabel = document.createElement('div');
-          lockLabel.style.cssText = 'font-size:10px; color:#ccc; margin-top:3px';
-          lockLabel.textContent = '(잠금)';
-          node.appendChild(lockLabel);
-        } else {
-          // 언락된 역 클릭 → 폴라로이드 모달
+        if (station.unlocked) {
           node.addEventListener('click', function() {
             openStampModal(station.id);
           });
@@ -123,17 +180,32 @@ function openStampModal(stationId) {
   $('#modal-date').textContent = formatDate(stamp.acquired_at);
   $('#modal-author').textContent = 'by. ' + getNickname();
 
-  // 저장된 사진 불러오기
-  var modalPhoto = $('#modal-stamp-card .stamp-photo-area');
-  var savedPhoto = getStampPhoto(stamp.station_id);
+  // 사진 영역 초기화
+  var modalPhoto = $('#modal-photo-area');
   var placeholder = modalPhoto.querySelector('.photo-placeholder');
   var existingImg = modalPhoto.querySelector('img');
   if (existingImg) existingImg.remove();
+  modalPhoto.classList.remove('illustration-locked');
+  var oldCredit = modalPhoto.querySelector('.illust-credit');
+  if (oldCredit) oldCredit.remove();
 
-  if (savedPhoto) {
-    displayPhotoInArea(modalPhoto, savedPhoto);
-  } else if (placeholder) {
-    placeholder.style.display = '';
+  if (stamp.illustration_url) {
+    // 일러스트 카드
+    displayPhotoInArea(modalPhoto, stamp.illustration_url);
+    modalPhoto.classList.add('illustration-locked');
+    if (stamp.illustration_credit) {
+      var credit = document.createElement('div');
+      credit.className = 'illust-credit';
+      credit.textContent = stamp.illustration_credit;
+      modalPhoto.appendChild(credit);
+    }
+  } else {
+    var savedPhoto = getStampPhoto(stamp.station_id);
+    if (savedPhoto) {
+      displayPhotoInArea(modalPhoto, savedPhoto);
+    } else if (placeholder) {
+      placeholder.style.display = '';
+    }
   }
 
   $('#stamp-modal').classList.add('active');

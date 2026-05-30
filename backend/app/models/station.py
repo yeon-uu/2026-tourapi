@@ -18,3 +18,6 @@ class Station(Base):
     weight: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
     description: Mapped[str | None] = mapped_column(String(200), nullable=True)
     stamp_image_url: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    # 시즌/일러스트 콜라보 카드
+    illustration_url: Mapped[str | None] = mapped_column(String(255), nullable=True)
+    illustration_credit: Mapped[str | None] = mapped_column(String(100), nullable=True)

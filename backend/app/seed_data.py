@@ -31,7 +31,7 @@ STATION_DATA = {
     "밀양역": {"mapX": "128.771206", "mapY": "35.474498", "description": "영남루의 멋진 야경과 고즈넉한 한옥의 정취가 있는 곳"},
     "부발역": {"mapX": "127.490371", "mapY": "37.259884", "description": "임금님 진상 이천 쌀밥과 온천 족욕으로 온몸이 따뜻해지는 곳"},
     "부산역": {"mapX": "129.042235", "mapY": "35.115231", "description": "뜨끈한 돼지국밥 한 그릇과 해운대 바다가 기다리는 종착지"},
-    "분천역": {"mapX": "129.058409", "mapY": "36.932532", "description": "1년 365일 크리스마스의 로망이 가득한 동화 속 산타 마을"},
+    "분천역": {"mapX": "129.058409", "mapY": "36.932532", "description": "1년 365일 크리스마스의 로망이 가득한 동화 속 산타 마을", "illustration_url": "https://images.unsplash.com/photo-1482517967863-00e15c9b44be?w=800&q=80", "illustration_credit": "illust. 아이두"},
     "상봉역": {"mapX": "127.084769", "mapY": "37.596745", "description": "강원도로 떠나는 설레는 기차 여행의 든든한 베이스캠프"},
     "서대구역": {"mapX": "128.538704", "mapY": "35.880826", "description": "활기찬 대구의 새로운 도약, 생동감 넘치는 트렌디한 관문"},
     "서대전역": {"mapX": "127.403931", "mapY": "36.322522", "description": "문화와 예술이 흐르는 대전의 또 다른 감성적인 매력"},
@@ -170,6 +170,8 @@ def build_station_list():
             "region_type": "depopulated" if is_depopulated else "normal",
             "weight": weight,
             "description": info["description"],
+            "illustration_url": info.get("illustration_url"),
+            "illustration_credit": info.get("illustration_credit"),
         })
 
     # ㄱㄴㄷ순 정렬

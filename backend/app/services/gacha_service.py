@@ -94,4 +94,6 @@ async def draw_gacha(db: AsyncSession, user_id: int, departure_station_id: int) 
         "requires_transfer": station.requires_transfer,
         "rarity": rarity,
         "remaining_draws": remaining,
+        "illustration_url": station.illustration_url,
+        "illustration_credit": station.illustration_credit,
     }

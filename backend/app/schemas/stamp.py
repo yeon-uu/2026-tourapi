@@ -11,6 +11,8 @@ class StampResponse(BaseModel):
     train_type: str
     rarity: str
     acquired_at: datetime
+    illustration_url: str | None = None
+    illustration_credit: str | None = None
 
     model_config = {"from_attributes": True}
 

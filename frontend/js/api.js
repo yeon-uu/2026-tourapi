@@ -58,6 +58,10 @@ function getStations() {
   return request('GET', '/stations');
 }
 
+function getRoutes() {
+  return request('GET', '/stations/routes');
+}
+
 // --- Gacha ---
 function drawGacha() {
   return request('POST', '/gacha/draw');

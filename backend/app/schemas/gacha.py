@@ -12,6 +12,8 @@ class GachaDrawResponse(BaseModel):
     requires_transfer: bool
     rarity: str
     remaining_draws: int
+    illustration_url: str | None = None
+    illustration_credit: str | None = None
 
     model_config = {"from_attributes": True}
 

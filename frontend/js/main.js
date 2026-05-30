@@ -13,10 +13,46 @@ const MAX_DRAWS = 5;
 function showStep(stepId) {
   $$('.screen').forEach(function(el) { el.classList.remove('active'); });
   $('#' + stepId).classList.add('active');
+  updateFlowProgress(stepId);
+}
+
+// --- 3단계 진행바 ---
+function updateFlowProgress(stepId) {
+  var bar = $('#flow-progress');
+  var s1 = $('#fp-step-1'), s2 = $('#fp-step-2'), s3 = $('#fp-step-3');
+  var l1 = $('#fp-line-1'), l2 = $('#fp-line-2');
+
+  // 스탬프 화면에서는 진행바 숨김
+  if (stepId === 'step-stamp') {
+    bar.classList.remove('visible');
+    return;
+  }
+
+  // 뽑기/채팅/미션 화면에서만 보임
+  bar.classList.add('visible');
+
+  // 초기화
+  [s1, s2, s3].forEach(function(s) { s.className = 'flow-step'; });
+  [l1, l2].forEach(function(l) { l.className = 'flow-line'; });
+
+  if (stepId === 'step-draw') {
+    s1.classList.add('active');
+  } else if (stepId === 'step-chat') {
+    s1.classList.add('completed');
+    l1.classList.add('filled');
+    s2.classList.add('active');
+  } else if (stepId === 'step-mission') {
+    s1.classList.add('completed');
+    s2.classList.add('completed');
+    s3.classList.add('completed');
+    l1.classList.add('filled');
+    l2.classList.add('filled');
+  }
 }
 
 // --- 초기화 ---
 updateDrawButton();
+updateFlowProgress('step-draw');
 
 // --- 내비게이션 ---
 $('#btn-home').addEventListener('click', function() {
@@ -71,9 +107,20 @@ async function drawCard() {
       hide('#res-transfer');
     }
 
-    // 카드 스타일
+    // 카드 스타일 (일러스트 있으면 special 클래스 추가)
     var cardFront = $('#card-result');
-    cardFront.className = 'card-face card-front ' + currentDraw.rarity;
+    var isSpecial = !!currentDraw.illustration_url;
+    cardFront.className = 'card-face card-front ' + currentDraw.rarity + (isSpecial ? ' special' : '');
+
+    // 특별카드 배지
+    var oldBadge = cardFront.querySelector('.special-badge');
+    if (oldBadge) oldBadge.remove();
+    if (isSpecial) {
+      var badge = document.createElement('div');
+      badge.className = 'special-badge';
+      badge.textContent = 'SPECIAL';
+      cardFront.appendChild(badge);
+    }
 
     updateDrawButton();
 
@@ -347,15 +394,32 @@ async function claimStamp() {
     $('#stamp-date').textContent = formatDate(stamp.acquired_at);
     $('#stamp-author').textContent = 'by. ' + getNickname();
 
-    // 사진 영역 — 기존 저장 사진 불러오기
+    // 사진 영역 — 일러스트 카드면 잠금 + 일러스트 표시
     var photoArea = $('#stamp-photo-area');
-    var savedPhoto = getStampPhoto(stamp.station_id);
-    if (savedPhoto) {
-      displayPhotoInArea(photoArea, savedPhoto);
+    photoArea.classList.remove('illustration-locked');
+    var oldCredit = photoArea.querySelector('.illust-credit');
+    if (oldCredit) oldCredit.remove();
+
+    if (currentDraw.illustration_url) {
+      // 일러스트 카드: 사진 영역 잠금 + 일러스트 표시
+      displayPhotoInArea(photoArea, currentDraw.illustration_url);
+      photoArea.classList.add('illustration-locked');
+      if (currentDraw.illustration_credit) {
+        var credit = document.createElement('div');
+        credit.className = 'illust-credit';
+        credit.textContent = currentDraw.illustration_credit;
+        photoArea.appendChild(credit);
+      }
     } else {
-      var existingImg = photoArea.querySelector('img');
-      if (existingImg) existingImg.remove();
-      show('#photo-placeholder');
+      // 일반 카드: 저장 사진 또는 플레이스홀더
+      var savedPhoto = getStampPhoto(stamp.station_id);
+      if (savedPhoto) {
+        displayPhotoInArea(photoArea, savedPhoto);
+      } else {
+        var existingImg = photoArea.querySelector('img');
+        if (existingImg) existingImg.remove();
+        show('#photo-placeholder');
+      }
     }
 
     // 완료 미션 목록 (textContent)
@@ -379,7 +443,9 @@ async function claimStamp() {
       line_name: stamp.line_name,
       rarity: stamp.rarity,
       acquired_at: stamp.acquired_at,
-      missions: currentChecklist.missions.map(function(m) { return m.title; })
+      missions: currentChecklist.missions.map(function(m) { return m.title; }),
+      illustration_url: currentDraw.illustration_url || null,
+      illustration_credit: currentDraw.illustration_credit || null
     };
     sessionStorage.setItem('last_stamp', JSON.stringify(stampData));
 
@@ -400,6 +466,8 @@ async function claimStamp() {
 
 // ===== 사진 업로드 =====
 $('#stamp-photo-area').addEventListener('click', function() {
+  // 일러스트 카드면 사진 업로드 차단
+  if (this.classList.contains('illustration-locked')) return;
   $('#stamp-photo-input').click();
 });
 

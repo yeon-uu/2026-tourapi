@@ -10,5 +10,7 @@ class StationResponse(BaseModel):
     region_type: str
     weight: int
     description: str | None = None
+    illustration_url: str | None = None
+    illustration_credit: str | None = None
 
     model_config = {"from_attributes": True}

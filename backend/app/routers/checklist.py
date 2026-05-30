@@ -132,5 +132,7 @@ async def complete(
             train_type=station.train_type,
             rarity=stamp.rarity,
             acquired_at=stamp.acquired_at,
+            illustration_url=station.illustration_url,
+            illustration_credit=station.illustration_credit,
         )
     )
