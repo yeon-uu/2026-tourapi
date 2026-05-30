@@ -39,7 +39,7 @@ function addDuduChatMsg(lines) {
   var avatar = document.createElement('div');
   avatar.className = 'chat-agent-avatar';
   var avatarImg = document.createElement('img');
-  avatarImg.src = '/images/dudu.png';
+  avatarImg.src = '/images/dudu_v2.png';
   avatarImg.alt = '두두';
   avatar.appendChild(avatarImg);
 
@@ -105,7 +105,7 @@ function showChatTyping() {
   var avatar = document.createElement('div');
   avatar.className = 'chat-agent-avatar';
   var avatarImg = document.createElement('img');
-  avatarImg.src = '/images/dudu.png';
+  avatarImg.src = '/images/dudu_v2.png';
   avatarImg.alt = '두두';
   avatar.appendChild(avatarImg);
 
