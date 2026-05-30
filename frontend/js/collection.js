@@ -119,7 +119,12 @@ async function loadCollection() {
 
       var trackLine = document.createElement('div');
       trackLine.className = 'track-line';
-      trackLine.style.background = 'repeating-linear-gradient(90deg, ' + routeColor + '33, ' + routeColor + '33 10px, transparent 10px, transparent 15px)';
+      trackLine.style.background = 'repeating-linear-gradient(90deg, ' + routeColor + '55, ' + routeColor + '55 10px, transparent 10px, transparent 15px)';
+      // 트랙 라인 너비를 전체 노드에 맞춤 (횡스크롤 대응)
+      var lineWidth = stationList.length * 60; // 노드 width 60px
+      trackLine.style.width = lineWidth + 'px';
+      trackLine.style.left = '30px';
+      trackLine.style.right = 'auto';
       trackContainer.appendChild(trackLine);
 
       stationList.forEach(function(station) {

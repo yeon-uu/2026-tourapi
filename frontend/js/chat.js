@@ -145,13 +145,7 @@ function renderChatChips() {
   var chipsEl = $('#chat-chips');
   var finishBtn = $('#chat-finish-btn');
   chipsEl.textContent = '';
-
-  // 남은 옵션이 없으면 완료 버튼만
-  if (chatAvailableOptions.length === 0) {
-    finishBtn.style.display = 'block';
-    finishBtn.textContent = '오케이 완료! 미션 만들어줘 🚀';
-    return;
-  }
+  finishBtn.style.display = 'none';
 
   // 개별 옵션 칩
   chatAvailableOptions.forEach(function(opt) {
@@ -164,10 +158,19 @@ function renderChatChips() {
     chipsEl.appendChild(btn);
   });
 
-  // 1개라도 선택 시 완료 버튼
+  // 1개라도 선택 시 완료 버튼 (칩 영역 안에 배치)
   if (chatSelectedThemes.length > 0) {
-    finishBtn.style.display = 'block';
-    finishBtn.textContent = '오케이 완료! 미션 받을래 🚀';
+    var doneBtn = document.createElement('button');
+    doneBtn.className = 'chat-chip-btn chat-done-btn';
+    if (chatAvailableOptions.length === 0) {
+      doneBtn.textContent = '오케이 완료! 미션 만들어줘 🚀';
+    } else {
+      doneBtn.textContent = '오케이 완료! 🚀';
+    }
+    doneBtn.addEventListener('click', function() {
+      completeChatSelection();
+    });
+    chipsEl.appendChild(doneBtn);
   }
 }
 

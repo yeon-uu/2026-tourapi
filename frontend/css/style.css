@@ -71,8 +71,12 @@ body {
 }
 
 /* 온보딩 사업 소개 티커 */
+.ticker-label {
+  font-size: 11px; font-weight: 700; color: #aaa; margin-top: 30px; margin-bottom: 6px;
+  text-align: left; padding-left: 5px; letter-spacing: 0.5px;
+}
 .onboarding-ticker {
-  width: 100%; overflow: hidden; margin-top: 30px;
+  width: 100%; overflow: hidden;
   mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
   -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
 }
@@ -627,12 +631,17 @@ select.custom-input.selected { color: var(--text-main); }
 .route-mini-fill {
   height: 100%; border-radius: 2px; transition: width 0.6s ease;
 }
-.track-container { display: flex; flex-wrap: wrap; gap: 15px 0; justify-content: space-around; position: relative; width: 100%; padding: 0 10px; box-sizing: border-box; }
-.track-line {
-  position: absolute; top: 18px; left: 10%; right: 10%; height: 4px;
-  background: repeating-linear-gradient(90deg, #ccc, #ccc 10px, transparent 10px, transparent 15px); z-index: 1;
+.track-container {
+  display: flex; flex-wrap: nowrap; gap: 0; position: relative; width: 100%;
+  padding: 10px 15px; box-sizing: border-box;
+  overflow-x: auto; -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
 }
-.track-node { display: flex; flex-direction: column; align-items: center; position: relative; z-index: 2; width: 60px; }
+.track-container::-webkit-scrollbar { display: none; }
+.track-line {
+  position: absolute; top: 28px; left: 15px; right: 15px; height: 3px; z-index: 1;
+}
+.track-node { display: flex; flex-direction: column; align-items: center; position: relative; z-index: 2; width: 60px; flex-shrink: 0; }
 .node-circle {
   width: 36px; height: 36px; border-radius: 50%; background: #f5f5f5;
   border: 3px solid #ccc; display: flex; align-items: center; justify-content: center;
@@ -776,6 +785,14 @@ select.custom-input.selected { color: var(--text-main); }
   font-family: 'Pretendard', sans-serif;
 }
 .chat-chip-btn:active { transform: scale(0.95); background: #f9f9f9; }
+
+.chat-done-btn {
+  background: linear-gradient(135deg, #FFB703, #FB8500) !important;
+  color: white !important; border: none !important;
+  box-shadow: 0 3px 10px rgba(251, 133, 0, 0.3);
+  width: 100%;
+}
+.chat-done-btn:active { transform: scale(0.97); }
 
 .chat-finish-btn {
   width: 100%; background: var(--accent-color); color: white; border: none;
