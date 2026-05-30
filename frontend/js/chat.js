@@ -205,16 +205,20 @@ function handleChatSend() {
       addDuduChatMsg(count + '개 취향 접수 완료멍! 📝');
     }
 
-    // 두 번째 메시지 (연달아)
+    // 두 번째 메시지 (타이핑 후 연달아)
+    showChatTyping();
     setTimeout(function() {
+      hideChatTyping();
       addDuduChatMsg(name + ' 님만의 미션 바로 만들어줄게멍! 🚀');
 
       // 로딩 스피너 표시 후 화면 전환
-      showChatTyping();
       setTimeout(function() {
-        hideChatTyping();
-        receiveMissionWithThemes(chatSelectedThemes);
-      }, 1000);
+        showChatTyping();
+        setTimeout(function() {
+          hideChatTyping();
+          receiveMissionWithThemes(chatSelectedThemes);
+        }, 1000);
+      }, 500);
     }, 800);
   }, 1000);
 }
