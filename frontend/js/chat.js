@@ -195,16 +195,27 @@ function handleChatSend() {
     hideChatTyping();
     var count = chatSelectedThemes.length;
     var name = getNickname();
+
+    // 첫 번째 메시지
     if (count === CHAT_OPTIONS.length) {
-      addDuduChatMsg(['와우! 전부 다 골랐다멍! 욕심쟁이멍! 😆', name + ' 님만의 특별한 미션 만들어줄게멍! 🎁']);
+      addDuduChatMsg('와우! 전부 다 골랐다멍! 욕심쟁이멍! 😆');
     } else if (count === 1 && chatSelectedThemes[0] === 'random') {
-      addDuduChatMsg(['나한테 맡기는 거다멍! 🎲', name + ' 님 최고로 재밌게 짜줄게멍!']);
+      addDuduChatMsg('나한테 맡기는 거다멍! 🎲');
     } else {
-      addDuduChatMsg([count + '개 취향 접수 완료멍! 📝', name + ' 님만의 미션 바로 만들어줄게멍!']);
+      addDuduChatMsg(count + '개 취향 접수 완료멍! 📝');
     }
+
+    // 두 번째 메시지 (연달아)
     setTimeout(function() {
-      receiveMissionWithThemes(chatSelectedThemes);
-    }, 1500);
+      addDuduChatMsg(name + ' 님만의 미션 바로 만들어줄게멍! 🚀');
+
+      // 로딩 스피너 표시 후 화면 전환
+      showChatTyping();
+      setTimeout(function() {
+        hideChatTyping();
+        receiveMissionWithThemes(chatSelectedThemes);
+      }, 1000);
+    }, 800);
   }, 1000);
 }
 
