@@ -54,3 +54,6 @@ frontend/design_*.html
 *.png
 !frontend/**/*.jpg
 !frontend/**/*.png
+!docs/img/aido-flow-1.png
+!docs/img/aido-flow-2.png
+!docs/img/aido-stamp-card.png
